@@ -29,7 +29,7 @@ app.use(errorHandler);
 
 const port = Number(process.env.PORT ?? 4000);
 
-app.listen(port, () => {
-  console.log(`[backend] listening on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`[backend] listening on 0.0.0.0:${port}`);
   console.log(`[backend] CORS origins: ${corsOrigins.join(', ')}`);
 });
