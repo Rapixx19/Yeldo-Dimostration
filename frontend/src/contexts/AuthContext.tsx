@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { loginRequest, signupRequest, demoLoginRequest } from '../api/auth';
 import type { AuthUser } from '../types/auth';
 
@@ -23,23 +16,28 @@ const AuthContext = createContext<AuthState | null>(null);
 const TOKEN_KEY = 'yeldo_token';
 const USER_KEY = 'yeldo_user';
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+function readStoredUser(): AuthUser | null {
+  const raw = localStorage.getItem(USER_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as AuthUser;
+  } catch {
+    localStorage.removeItem(USER_KEY);
+    return null;
+  }
+}
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    const storedUser = localStorage.getItem(USER_KEY);
-    if (storedToken && storedUser) {
-      try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser) as AuthUser);
-      } catch {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-      }
-    }
-  }, []);
+function readStoredToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  // Read synchronously on first render so ProtectedRoute sees the persisted
+  // token immediately. A useEffect-based hydration races with the first
+  // render and causes a "redirect to /auth/login → token reappears → redirect
+  // to /discover" loop on direct navigation to /portfolio (bug found via QA).
+  const [user, setUser] = useState<AuthUser | null>(readStoredUser);
+  const [token, setToken] = useState<string | null>(readStoredToken);
 
   function persist(nextUser: AuthUser, nextToken: string) {
     localStorage.setItem(TOKEN_KEY, nextToken);
