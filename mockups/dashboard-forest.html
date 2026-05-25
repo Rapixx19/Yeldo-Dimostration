@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferdinand Deal Tracker — Editorial Forest palette</title>
+<style>
+  :root {
+    --bg-page: #F8F5EE;
+    --bg-card: #FFFFFF;
+    --bg-soft: #F0EBE0;
+    --brand-dark: #1C2820;
+    --brand-accent: #A87432;
+    --text-primary: #1C2820;
+    --text-secondary: #5A6B5F;
+    --text-tertiary: #8B9285;
+    --text-success: #4A7C3A;
+    --border-light: rgba(28,40,32,0.08);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px; background:var(--bg-page); font-family:var(--font); color:var(--text-primary); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .app { max-width:1100px; margin:0 auto; background:var(--bg-card); border-radius:16px; overflow:hidden; border:0.5px solid var(--border-light); }
+  .app-header { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:0.5px solid var(--border-light); }
+  .logo { font-weight:500; font-size:16px; display:flex; align-items:center; gap:10px; letter-spacing:-0.01em; }
+  .logo-dot { width:20px; height:20px; border-radius:5px; background:var(--brand-accent); }
+  .nav-links { display:flex; gap:28px; font-size:13px; color:var(--text-secondary); }
+  .nav-links .active { color:var(--text-primary); font-weight:500; }
+  .av { width:32px; height:32px; border-radius:50%; background:var(--brand-dark); color:#F0EBE0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; }
+  .content { padding:24px; }
+  .welcome { margin-bottom:1.5rem; display:flex; align-items:baseline; justify-content:space-between; }
+  .welcome h2 { margin:0 0 4px; font-size:22px; font-weight:500; letter-spacing:-0.01em; }
+  .welcome p { margin:0; font-size:13px; color:var(--text-secondary); }
+  .total-pill { font-size:12px; color:var(--text-secondary); }
+  .total-pill .v { font-size:16px; color:var(--text-primary); font-weight:500; margin-left:8px; font-variant-numeric:tabular-nums; }
+  .kpi-grid { display:flex; flex-wrap:nowrap; gap:12px; margin-bottom:1.5rem; }
+  .kpi-card { background:var(--bg-soft); border-radius:var(--radius-md); padding:16px 18px; flex:1 1 0; min-width:0; }
+  .kpi-label { font-size:11px; color:var(--text-secondary); margin-bottom:8px; letter-spacing:0.04em; text-transform:uppercase; }
+  .kpi-value { font-size:26px; font-weight:500; line-height:1.1; letter-spacing:-0.01em; font-variant-numeric:tabular-nums; }
+  .kpi-foot { font-size:12px; color:var(--text-secondary); margin-top:8px; }
+  .kpi-foot.pos { color:var(--text-success); font-weight:500; }
+  .kpi-foot.brass { color:var(--brand-accent); font-weight:500; }
+  .two-col { display:flex; gap:12px; margin-bottom:1.5rem; }
+  .two-col > * { flex:1 1 0; min-width:0; }
+  .two-col > *:first-child { flex:1.1 1 0; }
+  .card { background:var(--bg-card); border:0.5px solid var(--border-light); border-radius:var(--radius-lg); padding:18px 20px; }
+  .card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .card-title { font-size:14px; font-weight:500; margin:0; }
+  .card-sub { font-size:11px; color:var(--text-tertiary); }
+  .alloc-row { display:flex; gap:20px; align-items:center; }
+  .alloc-row > svg { flex-shrink:0; }
+  .alloc-row > .legend { flex:1; min-width:0; }
+  .legend-item { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; }
+  .legend-item:last-child { margin-bottom:0; }
+  .legend-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+  .legend-pct { margin-left:auto; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+  .dist-item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid var(--border-light); font-size:13px; }
+  .dist-item:last-child { border-bottom:none; padding-bottom:0; }
+  .dist-item:first-child { padding-top:0; }
+  .dist-left { display:flex; align-items:center; gap:12px; min-width:0; }
+  .dist-name { font-weight:500; font-size:13px; }
+  .dist-date { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
+  .dist-amt { color:var(--text-success); font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .flag { width:22px; height:16px; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; font-size:8px; font-weight:500; color:#fff; overflow:hidden; }
+  .f-it { background:linear-gradient(to right,#009246 33%,#fff 33%,#fff 66%,#CE2B37 66%); }
+  .f-es { background:linear-gradient(to bottom,#AA151B 25%,#F1BF00 25%,#F1BF00 75%,#AA151B 75%); }
+  .f-ch { background:#DA291C; }
+  .f-de { background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%); }
+  .table-card { background:var(--bg-card); border:0.5px solid var(--border-light); border-radius:var(--radius-lg); overflow:hidden; }
+  .table-card-head { padding:18px 20px 0; display:flex; align-items:center; justify-content:space-between; }
+  table.inv { width:100%; border-collapse:collapse; font-size:13px; margin-top:14px; table-layout:fixed; }
+  table.inv th { text-align:left; padding:10px 16px; font-weight:400; color:var(--text-secondary); font-size:11px; border-bottom:0.5px solid var(--border-light); letter-spacing:0.04em; text-transform:uppercase; }
+  table.inv th.num, table.inv td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  table.inv td { padding:14px 16px; border-bottom:0.5px solid var(--border-light); font-size:13px; }
+  table.inv tr:last-child td { border-bottom:none; }
+  .deal-cell { display:flex; align-items:center; gap:10px; min-width:0; }
+  .deal-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:500; }
+  .pill { display:inline-block; padding:3px 10px; border-radius:var(--radius-md); font-size:11px; font-weight:500; letter-spacing:0.02em; white-space:nowrap; }
+  .pill-senior { background:rgba(28,40,32,0.08); color:var(--brand-dark); }
+  .pill-mezz { background:rgba(168,116,50,0.15); color:var(--brand-accent); }
+  .pill-debt { background:rgba(74,124,58,0.12); color:var(--text-success); }
+  .pill-secured { background:rgba(180,83,9,0.12); color:#B45309; }
+  .bar-bg { width:100%; height:4px; background:var(--bg-soft); border-radius:2px; overflow:hidden; margin-top:4px; }
+  .bar-fl { height:100%; background:var(--brand-accent); border-radius:2px; }
+  .mat-text { font-size:12px; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+  .footer-note { margin-top:32px; font-size:11px; color:var(--text-tertiary); text-align:center; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo"><span class="logo-dot"></span>Ferdinand Tracker</div>
+      <nav class="nav-links">
+        <span>Discover</span>
+        <span class="active">Portfolio</span>
+        <span>Dashboard</span>
+        <span>Updates</span>
+      </nav>
+      <div class="av">FS</div>
+    </header>
+
+    <div class="content">
+      <div class="welcome">
+        <div>
+          <h2>Welcome back, Ferdinand</h2>
+          <p>Your portfolio across 6 active deals in Europe</p>
+        </div>
+        <div class="total-pill">Total portfolio value <span class="v">€45,200</span></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total invested</div>
+          <div class="kpi-value">€45,200</div>
+          <div class="kpi-foot">across 6 deals</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Weighted IRR</div>
+          <div class="kpi-value">12.5%</div>
+          <div class="kpi-foot pos">above 10% target</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Projected returns</div>
+          <div class="kpi-value">€7,420</div>
+          <div class="kpi-foot">over remaining term</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Next distribution</div>
+          <div class="kpi-value">€1,250</div>
+          <div class="kpi-foot brass">15 Mar 2026</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">Allocation by country</h3>
+            <span class="card-sub">6 deals</span>
+          </div>
+          <div class="alloc-row">
+            <svg viewBox="0 0 120 120" width="140" height="140" role="img">
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#F0EBE0" stroke-width="16"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#1C2820" stroke-width="16" stroke-dasharray="100.5 251.3" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#A87432" stroke-width="16" stroke-dasharray="88 251.3" stroke-dashoffset="-100.5" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#4A7C3A" stroke-width="16" stroke-dasharray="30.2 251.3" stroke-dashoffset="-188.5" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#5A6B5F" stroke-width="16" stroke-dasharray="32.6 251.3" stroke-dashoffset="-218.7" transform="rotate(-90 60 60)"/>
+              <text x="60" y="58" text-anchor="middle" font-size="11" fill="#5A6B5F">Total</text>
+              <text x="60" y="74" text-anchor="middle" font-size="14" fill="#1C2820" font-weight="500">€45.2K</text>
+            </svg>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#1C2820"></span>Italy<span class="legend-pct">40%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#A87432"></span>Spain<span class="legend-pct">35%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#4A7C3A"></span>Switzerland<span class="legend-pct">12%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#5A6B5F"></span>Germany<span class="legend-pct">13%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">Upcoming distributions</h3>
+            <span class="card-sub">next 90 days</span>
+          </div>
+          <div class="dist-item">
+            <div class="dist-left">
+              <span class="flag f-it">IT</span>
+              <div><div class="dist-name">Rovello 14</div><div class="dist-date">15 Mar 2026 · Mezzanine</div></div>
+            </div>
+            <div class="dist-amt">+€1,250</div>
+          </div>
+          <div class="dist-item">
+            <div class="dist-left">
+              <span class="flag f-es">ES</span>
+              <div><div class="dist-name">Mas d'en Bruno</div><div class="dist-date">22 Mar 2026 · Senior Loan</div></div>
+            </div>
+            <div class="dist-amt">+€420</div>
+          </div>
+          <div class="dist-item">
+            <div class="dist-left">
+              <span class="flag f-ch">CH</span>
+              <div><div class="dist-name">Louis-Casaï</div><div class="dist-date">05 Apr 2026 · Secured Mezz</div></div>
+            </div>
+            <div class="dist-amt">+€189</div>
+          </div>
+          <div class="dist-item">
+            <div class="dist-left">
+              <span class="flag f-de">DE</span>
+              <div><div class="dist-name">Berlin Mitte Lofts</div><div class="dist-date">18 Apr 2026 · Senior Loan</div></div>
+            </div>
+            <div class="dist-amt">+€171</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-card-head">
+          <h3 class="card-title">Active investments</h3>
+          <span class="card-sub">6 deals · weighted maturity 28 months</span>
+        </div>
+        <table class="inv">
+          <colgroup>
+            <col style="width:32%"><col style="width:18%"><col style="width:15%"><col style="width:10%"><col style="width:25%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Deal</th><th>Instrument</th><th class="num">Invested</th><th class="num">IRR</th><th>Maturity progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="deal-cell"><span class="flag f-es">ES</span><span class="deal-name">Mas d'en Bruno</span></div></td><td><span class="pill pill-senior">Senior Loan</span></td><td class="num">€12,000</td><td class="num">12.5%</td><td><div class="mat-text">18 of 24 mo</div><div class="bar-bg"><div class="bar-fl" style="width:75%"></div></div></td></tr>
+            <tr><td><div class="deal-cell"><span class="flag f-it">IT</span><span class="deal-name">Varedo, ex SNIA</span></div></td><td><span class="pill pill-debt">Senior Debt</span></td><td class="num">€10,000</td><td class="num">9.8%</td><td><div class="mat-text">10 of 12 mo</div><div class="bar-bg"><div class="bar-fl" style="width:83%"></div></div></td></tr>
+            <tr><td><div class="deal-cell"><span class="flag f-it">IT</span><span class="deal-name">Rovello 14</span></div></td><td><span class="pill pill-mezz">Mezzanine</span></td><td class="num">€8,000</td><td class="num">14.2%</td><td><div class="mat-text">12 of 30 mo</div><div class="bar-bg"><div class="bar-fl" style="width:40%"></div></div></td></tr>
+            <tr><td><div class="deal-cell"><span class="flag f-de">DE</span><span class="deal-name">Berlin Mitte Lofts</span></div></td><td><span class="pill pill-senior">Senior Loan</span></td><td class="num">€6,000</td><td class="num">11.4%</td><td><div class="mat-text">14 of 36 mo</div><div class="bar-bg"><div class="bar-fl" style="width:39%"></div></div></td></tr>
+            <tr><td><div class="deal-cell"><span class="flag f-ch">CH</span><span class="deal-name">Louis-Casaï</span></div></td><td><span class="pill pill-secured">Secured Mezz</span></td><td class="num">€5,000</td><td class="num">15.1%</td><td><div class="mat-text">9 of 48 mo</div><div class="bar-bg"><div class="bar-fl" style="width:19%"></div></div></td></tr>
+            <tr><td><div class="deal-cell"><span class="flag f-es">ES</span><span class="deal-name">Costa Brava Villas</span></div></td><td><span class="pill pill-mezz">Mezzanine</span></td><td class="num">€4,200</td><td class="num">13.7%</td><td><div class="mat-text">6 of 24 mo</div><div class="bar-bg"><div class="bar-fl" style="width:25%"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">Ferdinand Tracker — Editorial Forest + Brass palette</div>
+</body>
+</html>

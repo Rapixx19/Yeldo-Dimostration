@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferdinand Tracker — Dashboard with TFT forecast</title>
+<style>
+  :root {
+    --bg-page: #F8F5EE;
+    --bg-card: #FFFFFF;
+    --bg-soft: #F0EBE0;
+    --brand-dark: #1C2820;
+    --brand-accent: #A87432;
+    --text-primary: #1C2820;
+    --text-secondary: #5A6B5F;
+    --text-tertiary: #8B9285;
+    --text-success: #4A7C3A;
+    --border-light: rgba(28,40,32,0.08);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px; background:var(--bg-page); font-family:var(--font); color:var(--text-primary); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .app { max-width:1100px; margin:0 auto; background:var(--bg-card); border-radius:16px; overflow:hidden; border:0.5px solid var(--border-light); }
+  .app-header { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:0.5px solid var(--border-light); }
+  .logo { font-weight:500; font-size:16px; display:flex; align-items:center; gap:10px; letter-spacing:-0.01em; }
+  .logo-dot { width:20px; height:20px; border-radius:5px; background:var(--brand-accent); }
+  .nav-links { display:flex; gap:28px; font-size:13px; color:var(--text-secondary); }
+  .nav-links .active { color:var(--text-primary); font-weight:500; }
+  .av { width:32px; height:32px; border-radius:50%; background:var(--brand-dark); color:#F0EBE0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; }
+  .content { padding:24px; }
+  .welcome { margin-bottom:1.5rem; display:flex; align-items:baseline; justify-content:space-between; }
+  .welcome h2 { margin:0 0 4px; font-size:22px; font-weight:500; letter-spacing:-0.01em; }
+  .welcome p { margin:0; font-size:13px; color:var(--text-secondary); }
+  .total-pill { font-size:12px; color:var(--text-secondary); }
+  .total-pill .v { font-size:16px; color:var(--text-primary); font-weight:500; margin-left:8px; font-variant-numeric:tabular-nums; }
+  .kpi-grid { display:flex; flex-wrap:nowrap; gap:12px; margin-bottom:1.5rem; }
+  .kpi-card { background:var(--bg-soft); border-radius:var(--radius-md); padding:16px 18px; flex:1 1 0; min-width:0; }
+  .kpi-label { font-size:11px; color:var(--text-secondary); margin-bottom:8px; letter-spacing:0.04em; text-transform:uppercase; }
+  .kpi-value { font-size:26px; font-weight:500; line-height:1.1; letter-spacing:-0.01em; font-variant-numeric:tabular-nums; }
+  .kpi-foot { font-size:12px; color:var(--text-secondary); margin-top:8px; }
+  .kpi-foot.pos { color:var(--text-success); font-weight:500; }
+  .kpi-foot.brass { color:var(--brand-accent); font-weight:500; }
+  .two-col { display:flex; gap:12px; margin-bottom:1.5rem; }
+  .two-col > * { flex:1 1 0; min-width:0; }
+  .two-col > *:first-child { flex:1.1 1 0; }
+  .card { background:var(--bg-card); border:0.5px solid var(--border-light); border-radius:var(--radius-lg); padding:18px 20px; }
+  .card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .card-head-stack { display:flex; flex-direction:column; gap:2px; }
+  .card-title { font-size:14px; font-weight:500; margin:0; }
+  .card-sub { font-size:11px; color:var(--text-tertiary); }
+  .ml-badge { display:inline-flex; align-items:center; gap:6px; padding:2px 8px; border-radius:var(--radius-md); font-size:10px; font-weight:500; background:rgba(168,116,50,0.12); color:var(--brand-accent); letter-spacing:0.02em; }
+  .ml-badge .dot { width:6px; height:6px; border-radius:50%; background:var(--brand-accent); }
+  .alloc-row { display:flex; gap:20px; align-items:center; }
+  .alloc-row > svg { flex-shrink:0; }
+  .alloc-row > .legend { flex:1; min-width:0; }
+  .legend-item { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; }
+  .legend-item:last-child { margin-bottom:0; }
+  .legend-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+  .legend-pct { margin-left:auto; color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+  .dist-item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid var(--border-light); font-size:13px; }
+  .dist-item:last-child { border-bottom:none; padding-bottom:0; }
+  .dist-item:first-child { padding-top:0; }
+  .dist-left { display:flex; align-items:center; gap:12px; min-width:0; }
+  .dist-name { font-weight:500; font-size:13px; }
+  .dist-date { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
+  .dist-amt { color:var(--text-success); font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .flag { width:22px; height:16px; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; font-size:8px; font-weight:500; color:#fff; overflow:hidden; }
+  .f-it { background:linear-gradient(to right,#009246 33%,#fff 33%,#fff 66%,#CE2B37 66%); }
+  .f-es { background:linear-gradient(to bottom,#AA151B 25%,#F1BF00 25%,#F1BF00 75%,#AA151B 75%); }
+  .f-ch { background:#DA291C; }
+  .f-de { background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%); }
+  .forecast-card { background:var(--bg-card); border:0.5px solid var(--border-light); border-radius:var(--radius-lg); padding:18px 20px; margin-bottom:1.5rem; }
+  .forecast-legend { display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:12px; color:var(--text-secondary); }
+  .forecast-legend .item { display:flex; align-items:center; gap:6px; }
+  .forecast-legend .swatch { width:12px; height:12px; border-radius:2px; }
+  .paper-cite { font-size:11px; color:var(--text-tertiary); margin-top:10px; font-style:italic; }
+  .paper-cite a { color:var(--brand-accent); text-decoration:none; }
+  .footer-note { margin-top:32px; font-size:11px; color:var(--text-tertiary); text-align:center; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo"><span class="logo-dot"></span>Ferdinand Tracker</div>
+      <nav class="nav-links">
+        <span>Discover</span>
+        <span class="active">Portfolio</span>
+        <span>Dashboard</span>
+        <span>Updates</span>
+      </nav>
+      <div class="av">FS</div>
+    </header>
+
+    <div class="content">
+      <div class="welcome">
+        <div>
+          <h2>Welcome back, Ferdinand</h2>
+          <p>Your portfolio across 6 active deals in Europe</p>
+        </div>
+        <div class="total-pill">Total portfolio value <span class="v">€45,200</span></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Total invested</div><div class="kpi-value">€45,200</div><div class="kpi-foot">across 6 deals</div></div>
+        <div class="kpi-card"><div class="kpi-label">Weighted IRR</div><div class="kpi-value">12.5%</div><div class="kpi-foot pos">above 10% target</div></div>
+        <div class="kpi-card"><div class="kpi-label">Projected returns</div><div class="kpi-value">€7,420</div><div class="kpi-foot">over remaining term</div></div>
+        <div class="kpi-card"><div class="kpi-label">Next distribution</div><div class="kpi-value">€1,250</div><div class="kpi-foot brass">15 Mar 2026</div></div>
+      </div>
+
+      <div class="forecast-card">
+        <div class="card-head">
+          <div class="card-head-stack">
+            <h3 class="card-title">Projected distributions — next 36 months</h3>
+            <span class="card-sub">Multi-horizon cash flow forecast across all active deals</span>
+          </div>
+          <span class="ml-badge"><span class="dot"></span>TFT-inspired model</span>
+        </div>
+
+        <svg viewBox="0 0 960 240" width="100%" height="240" role="img" aria-label="Stacked area chart of projected distributions over 36 months">
+          <line x1="60" y1="200" x2="940" y2="200" stroke="#5A6B5F" stroke-width="0.5" opacity="0.3"/>
+          <line x1="60" y1="150" x2="940" y2="150" stroke="#5A6B5F" stroke-width="0.5" opacity="0.15" stroke-dasharray="3 3"/>
+          <line x1="60" y1="100" x2="940" y2="100" stroke="#5A6B5F" stroke-width="0.5" opacity="0.15" stroke-dasharray="3 3"/>
+          <line x1="60" y1="50" x2="940" y2="50" stroke="#5A6B5F" stroke-width="0.5" opacity="0.15" stroke-dasharray="3 3"/>
+
+          <text x="50" y="204" text-anchor="end" font-size="10" fill="#8B9285">€0</text>
+          <text x="50" y="154" text-anchor="end" font-size="10" fill="#8B9285">€1K</text>
+          <text x="50" y="104" text-anchor="end" font-size="10" fill="#8B9285">€2K</text>
+          <text x="50" y="54" text-anchor="end" font-size="10" fill="#8B9285">€3K</text>
+
+          <text x="60" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Mar 26</text>
+          <text x="207" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Sep 26</text>
+          <text x="354" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Mar 27</text>
+          <text x="500" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Sep 27</text>
+          <text x="647" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Mar 28</text>
+          <text x="794" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Sep 28</text>
+          <text x="940" y="222" text-anchor="middle" font-size="10" fill="#8B9285">Mar 29</text>
+
+          <path d="M 60 196 L 110 188 L 160 180 L 207 168 L 254 178 L 305 170 L 354 156 L 401 168 L 450 158 L 500 140 L 549 158 L 598 150 L 647 140 L 694 158 L 743 168 L 794 178 L 843 188 L 892 192 L 940 196 L 940 200 L 60 200 Z" fill="#1C2820" opacity="0.85"/>
+
+          <path d="M 60 188 L 110 178 L 160 168 L 207 154 L 254 162 L 305 152 L 354 138 L 401 148 L 450 136 L 500 120 L 549 136 L 598 128 L 647 118 L 694 130 L 743 140 L 794 152 L 843 168 L 892 176 L 940 186 L 940 196 L 892 192 L 843 188 L 794 178 L 743 168 L 694 158 L 647 140 L 598 150 L 549 158 L 500 140 L 450 158 L 401 168 L 354 156 L 305 170 L 254 178 L 207 168 L 160 180 L 110 188 L 60 196 Z" fill="#A87432" opacity="0.85"/>
+
+          <path d="M 60 178 L 110 168 L 160 156 L 207 138 L 254 148 L 305 134 L 354 116 L 401 130 L 450 116 L 500 96 L 549 116 L 598 108 L 647 96 L 694 112 L 743 122 L 794 134 L 843 152 L 892 164 L 940 174 L 940 186 L 892 176 L 843 168 L 794 152 L 743 140 L 694 130 L 647 118 L 598 128 L 549 136 L 500 120 L 450 136 L 401 148 L 354 138 L 305 152 L 254 162 L 207 154 L 160 168 L 110 178 L 60 188 Z" fill="#4A7C3A" opacity="0.85"/>
+
+          <path d="M 60 172 L 110 160 L 160 144 L 207 122 L 254 132 L 305 116 L 354 92 L 401 110 L 450 92 L 500 70 L 549 92 L 598 80 L 647 66 L 694 86 L 743 100 L 794 116 L 843 138 L 892 152 L 940 164 L 940 174 L 892 164 L 843 152 L 794 134 L 743 122 L 694 112 L 647 96 L 598 108 L 549 116 L 500 96 L 450 116 L 401 130 L 354 116 L 305 134 L 254 148 L 207 138 L 160 156 L 110 168 L 60 178 Z" fill="#5A6B5F" opacity="0.7"/>
+
+          <line x1="500" y1="40" x2="500" y2="200" stroke="#A87432" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.6"/>
+          <text x="505" y="48" font-size="10" fill="#A87432" font-weight="500">Mas d'en Bruno maturity</text>
+
+          <line x1="354" y1="60" x2="354" y2="200" stroke="#A87432" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.6"/>
+          <text x="359" y="68" font-size="10" fill="#A87432" font-weight="500">Varedo maturity</text>
+        </svg>
+
+        <div class="forecast-legend">
+          <div class="item"><span class="swatch" style="background:#1C2820"></span>Quarterly distributions</div>
+          <div class="item"><span class="swatch" style="background:#A87432"></span>Mas d'en Bruno (Sr Loan)</div>
+          <div class="item"><span class="swatch" style="background:#4A7C3A"></span>Louis-Casaï (Sec Mezz)</div>
+          <div class="item"><span class="swatch" style="background:#5A6B5F"></span>Maturity payouts</div>
+        </div>
+        <div class="paper-cite">Forecast model inspired by Temporal Fusion Transformer (Lim et al., 2020) — <a>arXiv:1912.09363</a>. Static covariates + known future inputs + interpretable variable importance.</div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Allocation by country</h3><span class="card-sub">6 deals</span></div>
+          <div class="alloc-row">
+            <svg viewBox="0 0 120 120" width="140" height="140" role="img">
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#F0EBE0" stroke-width="16"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#1C2820" stroke-width="16" stroke-dasharray="100.5 251.3" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#A87432" stroke-width="16" stroke-dasharray="88 251.3" stroke-dashoffset="-100.5" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#4A7C3A" stroke-width="16" stroke-dasharray="30.2 251.3" stroke-dashoffset="-188.5" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="#5A6B5F" stroke-width="16" stroke-dasharray="32.6 251.3" stroke-dashoffset="-218.7" transform="rotate(-90 60 60)"/>
+              <text x="60" y="58" text-anchor="middle" font-size="11" fill="#5A6B5F">Total</text>
+              <text x="60" y="74" text-anchor="middle" font-size="14" fill="#1C2820" font-weight="500">€45.2K</text>
+            </svg>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#1C2820"></span>Italy<span class="legend-pct">40%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#A87432"></span>Spain<span class="legend-pct">35%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#4A7C3A"></span>Switzerland<span class="legend-pct">12%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:#5A6B5F"></span>Germany<span class="legend-pct">13%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Upcoming distributions</h3><span class="card-sub">next 90 days</span></div>
+          <div class="dist-item"><div class="dist-left"><span class="flag f-it">IT</span><div><div class="dist-name">Rovello 14</div><div class="dist-date">15 Mar 2026 · Mezzanine</div></div></div><div class="dist-amt">+€1,250</div></div>
+          <div class="dist-item"><div class="dist-left"><span class="flag f-es">ES</span><div><div class="dist-name">Mas d'en Bruno</div><div class="dist-date">22 Mar 2026 · Senior Loan</div></div></div><div class="dist-amt">+€420</div></div>
+          <div class="dist-item"><div class="dist-left"><span class="flag f-ch">CH</span><div><div class="dist-name">Louis-Casaï</div><div class="dist-date">05 Apr 2026 · Secured Mezz</div></div></div><div class="dist-amt">+€189</div></div>
+          <div class="dist-item"><div class="dist-left"><span class="flag f-de">DE</span><div><div class="dist-name">Berlin Mitte Lofts</div><div class="dist-date">18 Apr 2026 · Senior Loan</div></div></div><div class="dist-amt">+€171</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">Ferdinand Tracker — with TFT-inspired multi-horizon forecast</div>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yeldo Deal Tracker — Deals list mockup</title>
+<style>
+  :root {
+    --bg-page: #F7F6F2;
+    --bg-card: #FFFFFF;
+    --bg-soft: #F1EFE8;
+    --text-primary: #1A1A19;
+    --text-secondary: #5F5E5A;
+    --text-tertiary: #888780;
+    --text-success: #3B6D11;
+    --text-info: #185FA5;
+    --border-light: rgba(0,0,0,0.08);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    background: var(--bg-page);
+    font-family: var(--font);
+    color: var(--text-primary);
+    font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app {
+    max-width: 1100px; margin: 0 auto;
+    background: var(--bg-card);
+    border-radius: 16px; overflow: hidden;
+    border: 0.5px solid var(--border-light);
+  }
+  .app-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 0.5px solid var(--border-light);
+  }
+  .logo { font-weight: 500; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 20px; height: 20px; border-radius: 5px; background: var(--text-info); }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; color: var(--text-secondary); }
+  .nav-links .active { color: var(--text-primary); font-weight: 500; }
+  .av { width: 32px; height: 32px; border-radius: 50%; background: #E6F1FB;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: var(--text-info); }
+  .content { padding: 24px; }
+  .page-head { margin-bottom: 1.5rem; }
+  .page-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
+  .page-head p { margin: 0; font-size: 13px; color: var(--text-secondary); }
+  .stats-bar {
+    display: flex; gap: 24px; margin: 1.25rem 0 1.5rem;
+    padding: 12px 18px; background: var(--bg-soft); border-radius: var(--radius-md);
+  }
+  .stats-bar div { font-size: 12px; color: var(--text-secondary); }
+  .stats-bar div .v { display: block; font-size: 16px; font-weight: 500; color: var(--text-primary); margin-top: 2px; }
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 0.5px solid var(--border-light);
+  }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px;
+    border: 0.5px solid var(--border-light);
+    font-size: 12px; color: var(--text-secondary);
+    background: var(--bg-card);
+    cursor: pointer;
+  }
+  .filter-chip.active { background: var(--text-primary); color: #fff; border-color: transparent; }
+  .filter-chip .arrow { font-size: 9px; opacity: 0.5; }
+  .search-input {
+    margin-left: auto;
+    padding: 6px 12px;
+    border: 0.5px solid var(--border-light);
+    border-radius: 20px; font-size: 12px;
+    color: var(--text-tertiary);
+    background: var(--bg-card);
+    min-width: 200px;
+  }
+  .deals-grid {
+    display: flex; flex-wrap: wrap; gap: 16px;
+  }
+  .deal-card {
+    width: calc(33.333% - 11px);
+    background: var(--bg-card);
+    border: 0.5px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .hero {
+    height: 140px; position: relative;
+    display: flex; align-items: flex-end; padding: 12px;
+  }
+  .hero-1 { background: linear-gradient(135deg, #BA7517 0%, #854F0B 100%); }
+  .hero-2 { background: linear-gradient(135deg, #185FA5 0%, #0C447C 100%); }
+  .hero-3 { background: linear-gradient(135deg, #5F5E5A 0%, #2C2C2A 100%); }
+  .hero-4 { background: linear-gradient(135deg, #0F6E56 0%, #085041 100%); }
+  .hero-5 { background: linear-gradient(135deg, #993C1D 0%, #4A1B0C 100%); }
+  .hero-6 { background: linear-gradient(135deg, #BA7517 0%, #D85A30 100%); }
+  .hero-badges { position: absolute; top: 12px; left: 12px; right: 12px;
+    display: flex; justify-content: space-between; gap: 8px; }
+  .pro-badge {
+    background: rgba(255,255,255,0.95); color: #1A1A19;
+    padding: 4px 10px; border-radius: 12px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.02em;
+  }
+  .flag {
+    width: 22px; height: 16px; border-radius: 3px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 500; color: #fff;
+    overflow: hidden; border: 0.5px solid rgba(255,255,255,0.4);
+  }
+  .f-it { background: linear-gradient(to right, #009246 33%, #fff 33%, #fff 66%, #CE2B37 66%); }
+  .f-es { background: linear-gradient(to bottom, #AA151B 25%, #F1BF00 25%, #F1BF00 75%, #AA151B 75%); }
+  .f-ch { background: #DA291C; }
+  .f-de { background: linear-gradient(to bottom, #000 33%, #DD0000 33%, #DD0000 66%, #FFCE00 66%); }
+  .hero-instrument {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(255,255,255,0.95); color: #1A1A19;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+  }
+  .card-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
+  .deal-title { font-size: 14px; font-weight: 500; margin: 0 0 4px; line-height: 1.3; }
+  .deal-loc { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
+  .stat-grid { display: flex; flex-wrap: wrap; gap: 10px 0; margin-bottom: 14px; }
+  .stat-grid > div { width: 50%; font-size: 11px; color: var(--text-secondary); }
+  .stat-grid > div .v { display: block; font-size: 13px; color: var(--text-primary); font-weight: 500; margin-top: 1px; font-variant-numeric: tabular-nums; }
+  .raised-bar {
+    background: var(--bg-soft); height: 4px; border-radius: 2px;
+    overflow: hidden; margin-top: auto; margin-bottom: 8px;
+  }
+  .raised-fl { height: 100%; background: var(--text-success); border-radius: 2px; }
+  .raised-text {
+    font-size: 11px; color: var(--text-secondary);
+    display: flex; justify-content: space-between; margin-bottom: 12px;
+  }
+  .raised-text .raised-amt { color: var(--text-primary); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .cta {
+    width: 100%; padding: 10px;
+    background: var(--text-primary); color: #fff;
+    border: none; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500;
+    text-align: center; cursor: pointer;
+  }
+  .footer-note { margin-top: 32px; font-size: 11px; color: var(--text-tertiary); text-align: center; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo"><span class="logo-dot"></span>Yeldo Deal Tracker</div>
+      <nav class="nav-links">
+        <span class="active">Discover</span>
+        <span>Portfolio</span>
+        <span>Dashboard</span>
+        <span>Updates</span>
+      </nav>
+      <div class="av">FS</div>
+    </header>
+
+    <div class="content">
+      <div class="page-head">
+        <h2>Discover deals</h2>
+        <p>Curated real estate investment opportunities across Europe</p>
+      </div>
+
+      <div class="stats-bar">
+        <div>Total transacted<span class="v">€1.8 Bn</span></div>
+        <div>Financed deals<span class="v">~70</span></div>
+        <div>Historical IRR<span class="v">13.5%</span></div>
+        <div>Exited deals<span class="v">30</span></div>
+        <div style="margin-left:auto">Open now<span class="v" style="color:var(--text-success)">6 deals</span></div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-chip active">All<span class="arrow">×</span></button>
+        <button class="filter-chip">Country <span class="arrow">▾</span></button>
+        <button class="filter-chip">Asset class <span class="arrow">▾</span></button>
+        <button class="filter-chip">Instrument <span class="arrow">▾</span></button>
+        <button class="filter-chip">Maturity <span class="arrow">▾</span></button>
+        <input class="search-input" type="text" placeholder="Search deals…">
+      </div>
+
+      <div class="deals-grid">
+
+        <article class="deal-card">
+          <div class="hero hero-1">
+            <div class="hero-badges">
+              <span class="pro-badge">Reserved to Professional Investors</span>
+              <span class="flag f-es">ES</span>
+            </div>
+            <span class="hero-instrument">Senior Loan</span>
+          </div>
+          <div class="card-body">
+            <h3 class="deal-title">Mas d'en Bruno</h3>
+            <div class="deal-loc">Priorat, Spain · Luxury hospitality</div>
+            <div class="stat-grid">
+              <div>Maturity<span class="v">24 months</span></div>
+              <div>Loan-to-value<span class="v">35%</span></div>
+              <div>Distribution<span class="v">Quarterly</span></div>
+              <div>Target IRR<span class="v">12.5%</span></div>
+            </div>
+            <div class="raised-bar"><div class="raised-fl" style="width:78%"></div></div>
+            <div class="raised-text"><span>Raised</span><span class="raised-amt">€9.0M / €11.5M</span></div>
+            <button class="cta">View deal</button>
+          </div>
+        </article>
+
+        <article class="deal-card">
+          <div class="hero hero-2">
+            <div class="hero-badges">
+              <span class="pro-badge">Reserved to Professional Investors</span>
+              <span class="flag f-it">IT</span>
+            </div>
+            <span class="hero-instrument">Mezzanine Loan</span>
+          </div>
+          <div class="card-body">
+            <h3 class="deal-title">Rovello 14</h3>
+            <div class="deal-loc">Milan, Italy · Luxury residential</div>
+            <div class="stat-grid">
+              <div>Maturity<span class="v">30 months</span></div>
+              <div>Loan-to-value<span class="v">61%</span></div>
+              <div>Distribution<span class="v">At maturity</span></div>
+              <div>Target IRR<span class="v">14.2%</span></div>
+            </div>
+            <div class="raised-bar"><div class="raised-fl" style="width:96%"></div></div>
+            <div class="raised-text"><span>Raised</span><span class="raised-amt">€8.6M / €9.0M</span></div>
+            <button class="cta">View deal</button>
+          </div>
+        </article>
+
+        <article class="deal-card">
+          <div class="hero hero-3">
+            <div class="hero-badges">
+              <span class="pro-badge">Reserved to Professional Investors</span>
+              <span class="flag f-it">IT</span>
+            </div>
+            <span class="hero-instrument">Senior Debt</span>
+          </div>
+          <div class="card-body">
+            <h3 class="deal-title">Varedo, ex SNIA</h3>
+            <div class="deal-loc">Milan, Italy · Industrial conversion</div>
+            <div class="stat-grid">
+              <div>Maturity<span class="v">12 months</span></div>
+              <div>Loan-to-value<span class="v">24.4%</span></div>
+              <div>Distribution<span class="v">At maturity</span></div>
+              <div>Target IRR<span class="v">9.8%</span></div>
+            </div>
+            <div class="raised-bar"><div class="raised-fl" style="width:100%"></div></div>
+            <div class="raised-text"><span>Raised</span><span class="raised-amt">€5.0M / €5.0M</span></div>
+            <button class="cta">View deal</button>
+          </div>
+        </article>
+
+        <article class="deal-card">
+          <div class="hero hero-4">
+            <div class="hero-badges">
+              <span class="pro-badge">Reserved to Professional Investors</span>
+              <span class="flag f-ch">CH</span>
+            </div>
+            <span class="hero-instrument">Secured Mezzanine</span>
+          </div>
+          <div class="card-body">
+            <h3 class="deal-title">Louis-Casaï</h3>
+            <div class="deal-loc">Meyrin, Switzerland · Hospitality</div>
+            <div class="stat-grid">
+              <div>Maturity<span class="v">48 months</span></div>
+              <div>Loan-to-value<span class="v">46%</span></div>
+              <div>Distribution<span class="v">Quarterly</span></div>
+              <div>Target IRR<span class="v">15.1%</span></div>
+            </div>
+            <div class="raised-bar"><div class="raised-fl" style="width:62%"></div></div>
+            <div class="raised-text"><span>Raised</span><span class="raised-amt">CHF 2.5M / CHF 4.0M</span></div>
+            <button class="cta">View deal</button>
+          </div>
+        </article>
+
+        <article class="deal-card">
+          <div class="hero hero-5">
+            <div class="hero-badges">
+              <span class="pro-badge">Reserved to Professional Investors</span>
+              <span class="flag f-de">DE</span>
+            </div>
+            <span class="hero-instrument">Senior Loan</span>
+          </div>
+          <div class="card-body">
+            <h3 class="deal-title">Berlin Mitte Lofts</h3>
+            <div class="deal-loc">Berlin, Germany · Residential redev.</div>
+            <div class="stat-grid">
+              <div>Maturity<span class="v">36 months</span></div>
+              <div>Loan-to-value<span class="v">42%</span></div>
+              <div>Distribution<span class="v">Quarterly</span></div>
+              <div>Target IRR<span class="v">11.4%</span></div>
+            </div>
+            <div class="raised-bar"><div class="raised-fl" style="width:54%"></div></div>
+            <div class="raised-text"><span>Raised</span><span class="raised-amt">€6.5M / €12.0M</span></div>
+            <button class="cta">View deal</button>
+          </div>
+        </article>
+
+        <article class="deal-card">
+          <div class="hero hero-6">
+            <div class="hero-badges">
+              <span class="pro-badge">Reserved to Professional Investors</span>
+              <span class="flag f-es">ES</span>
+            </div>
+            <span class="hero-instrument">Mezzanine Loan</span>
+          </div>
+          <div class="card-body">
+            <h3 class="deal-title">Costa Brava Villas</h3>
+            <div class="deal-loc">Catalonia, Spain · Vacation rentals</div>
+            <div class="stat-grid">
+              <div>Maturity<span class="v">24 months</span></div>
+              <div>Loan-to-value<span class="v">55%</span></div>
+              <div>Distribution<span class="v">At maturity</span></div>
+              <div>Target IRR<span class="v">13.7%</span></div>
+            </div>
+            <div class="raised-bar"><div class="raised-fl" style="width:35%"></div></div>
+            <div class="raised-text"><span>Raised</span><span class="raised-amt">€4.2M / €12.0M</span></div>
+            <button class="cta">View deal</button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">Yeldo Deal Tracker — Discover view · portfolio piece by Ferdinand Straehuber</div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yeldo Deal Tracker — Deal detail mockup</title>
+<style>
+  :root {
+    --bg-page: #F7F6F2;
+    --bg-card: #FFFFFF;
+    --bg-soft: #F1EFE8;
+    --text-primary: #1A1A19;
+    --text-secondary: #5F5E5A;
+    --text-tertiary: #888780;
+    --text-success: #3B6D11;
+    --text-info: #185FA5;
+    --text-warning: #854F0B;
+    --border-light: rgba(0,0,0,0.08);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px; background:var(--bg-page); font-family:var(--font); color:var(--text-primary); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .app { max-width:1100px; margin:0 auto; background:var(--bg-card); border-radius:16px; overflow:hidden; border:0.5px solid var(--border-light); }
+  .app-header { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:0.5px solid var(--border-light); }
+  .logo { font-weight:500; font-size:16px; display:flex; align-items:center; gap:10px; }
+  .logo-dot { width:20px; height:20px; border-radius:5px; background:var(--text-info); }
+  .nav-links { display:flex; gap:28px; font-size:13px; color:var(--text-secondary); }
+  .nav-links .active { color:var(--text-primary); font-weight:500; }
+  .av { width:32px; height:32px; border-radius:50%; background:#E6F1FB; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; color:var(--text-info); }
+  .content { padding:24px; }
+  .breadcrumb { font-size:12px; color:var(--text-tertiary); margin-bottom:16px; }
+  .breadcrumb a { color:var(--text-secondary); text-decoration:none; }
+  .breadcrumb .sep { margin:0 8px; opacity:0.5; }
+  .hero { height:240px; border-radius:var(--radius-lg); position:relative; padding:20px; display:flex; align-items:flex-end; background:linear-gradient(135deg,#BA7517 0%,#854F0B 100%); margin-bottom:24px; overflow:hidden; }
+  .hero-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.5), transparent 60%); }
+  .hero-content { position:relative; z-index:1; color:#fff; }
+  .hero-badges { display:flex; gap:8px; margin-bottom:12px; }
+  .pro-badge { background:rgba(255,255,255,0.95); color:#1A1A19; padding:4px 12px; border-radius:12px; font-size:11px; font-weight:500; }
+  .instrument-badge { background:rgba(0,0,0,0.6); color:#fff; padding:4px 12px; border-radius:4px; font-size:11px; font-weight:500; }
+  .hero h1 { margin:0 0 4px; font-size:28px; font-weight:500; letter-spacing:-0.02em; }
+  .hero-loc { font-size:13px; opacity:0.9; display:flex; align-items:center; gap:8px; }
+  .flag { width:22px; height:16px; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; font-size:8px; font-weight:500; color:#fff; overflow:hidden; border:0.5px solid rgba(255,255,255,0.4); }
+  .f-es { background:linear-gradient(to bottom,#AA151B 25%,#F1BF00 25%,#F1BF00 75%,#AA151B 75%); }
+  .main-layout { display:flex; gap:24px; }
+  .col-main { flex:1.65; min-width:0; }
+  .col-side { flex:1; min-width:0; }
+  .tabs { display:flex; gap:0; border-bottom:0.5px solid var(--border-light); margin-bottom:20px; }
+  .tab { padding:10px 16px; font-size:13px; color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tab.active { color:var(--text-primary); font-weight:500; border-bottom-color:var(--text-primary); }
+  .section { margin-bottom:28px; }
+  .section h3 { font-size:14px; font-weight:500; margin:0 0 12px; }
+  .section p { font-size:13px; color:var(--text-secondary); margin:0 0 8px; line-height:1.6; }
+  .terms-grid { display:flex; flex-wrap:wrap; gap:12px; }
+  .term-card { width:calc(50% - 6px); background:var(--bg-soft); border-radius:var(--radius-md); padding:14px 16px; }
+  .term-label { font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px; }
+  .term-value { font-size:16px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .term-value.success { color:var(--text-success); }
+  .sponsor-card { display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-top:0.5px solid var(--border-light); }
+  .sponsor-logo { width:48px; height:48px; border-radius:8px; background:linear-gradient(135deg,#5F5E5A,#2C2C2A); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:500; font-size:14px; flex-shrink:0; }
+  .sponsor-name { font-size:14px; font-weight:500; margin:0 0 4px; }
+  .sponsor-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+  .risk-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:0.5px solid var(--border-light); font-size:13px; }
+  .risk-row:last-child { border-bottom:none; }
+  .risk-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .risk-low { background:var(--text-success); }
+  .risk-med { background:var(--text-warning); }
+  .risk-text { flex:1; }
+  .risk-label { font-size:11px; color:var(--text-secondary); margin-left:auto; }
+  .invest-card { background:var(--bg-card); border:0.5px solid var(--border-light); border-radius:var(--radius-lg); padding:20px; position:sticky; top:24px; }
+  .invest-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .invest-status { font-size:11px; color:var(--text-success); font-weight:500; display:flex; align-items:center; gap:6px; }
+  .invest-status .dot { width:8px; height:8px; border-radius:50%; background:var(--text-success); }
+  .raised-amt { font-size:24px; font-weight:500; margin-bottom:4px; letter-spacing:-0.01em; }
+  .raised-tgt { font-size:12px; color:var(--text-secondary); margin-bottom:12px; }
+  .raised-bar { background:var(--bg-soft); height:6px; border-radius:3px; overflow:hidden; margin-bottom:8px; }
+  .raised-fl { height:100%; background:var(--text-success); border-radius:3px; }
+  .raised-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:20px; font-variant-numeric:tabular-nums; }
+  .invest-stats { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding-bottom:20px; border-bottom:0.5px solid var(--border-light); }
+  .invest-stat { width:calc(50% - 5px); }
+  .invest-stat .l { font-size:11px; color:var(--text-secondary); margin-bottom:2px; }
+  .invest-stat .v { font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .input-label { display:block; font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .amount-input { width:100%; padding:12px 14px; border:0.5px solid var(--border-light); border-radius:var(--radius-md); font-size:18px; font-weight:500; font-family:var(--font); background:var(--bg-card); margin-bottom:8px; }
+  .quick-amounts { display:flex; gap:6px; margin-bottom:14px; }
+  .quick-amounts button { flex:1; padding:6px 0; font-size:11px; background:var(--bg-card); border:0.5px solid var(--border-light); border-radius:var(--radius-md); color:var(--text-secondary); cursor:pointer; }
+  .invest-summary { background:var(--bg-soft); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:14px; font-size:12px; }
+  .invest-summary-row { display:flex; justify-content:space-between; padding:3px 0; color:var(--text-secondary); }
+  .invest-summary-row.total { font-weight:500; color:var(--text-primary); border-top:0.5px solid var(--border-light); padding-top:8px; margin-top:6px; font-size:13px; }
+  .invest-summary-row .val { font-variant-numeric:tabular-nums; }
+  .cta-primary { width:100%; padding:13px; background:var(--text-primary); color:#fff; border:none; border-radius:var(--radius-md); font-size:14px; font-weight:500; cursor:pointer; margin-bottom:8px; }
+  .disclaimer { font-size:11px; color:var(--text-tertiary); line-height:1.5; text-align:center; }
+  .footer-note { margin-top:32px; font-size:11px; color:var(--text-tertiary); text-align:center; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo"><span class="logo-dot"></span>Yeldo Deal Tracker</div>
+      <nav class="nav-links">
+        <span class="active">Discover</span>
+        <span>Portfolio</span>
+        <span>Dashboard</span>
+        <span>Updates</span>
+      </nav>
+      <div class="av">FS</div>
+    </header>
+
+    <div class="content">
+      <div class="breadcrumb">
+        <a>Discover</a><span class="sep">›</span><a>Spain</a><span class="sep">›</span>Mas d'en Bruno
+      </div>
+
+      <div class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-badges">
+            <span class="pro-badge">Reserved to Professional Investors</span>
+            <span class="instrument-badge">Senior Loan</span>
+          </div>
+          <h1>Mas d'en Bruno</h1>
+          <div class="hero-loc">
+            <span class="flag f-es">ES</span>
+            Priorat, Spain  ·  Luxury 5★ Hotel Development
+          </div>
+        </div>
+      </div>
+
+      <div class="main-layout">
+        <div class="col-main">
+          <div class="tabs">
+            <div class="tab active">Overview</div>
+            <div class="tab">Financials</div>
+            <div class="tab">Sponsor</div>
+            <div class="tab">Risks</div>
+            <div class="tab">Updates</div>
+            <div class="tab">Documents</div>
+          </div>
+
+          <div class="section">
+            <h3>Investment summary</h3>
+            <p>Senior secured loan to finance the development of a luxury 5★ hotel in the renowned wine region of Priorat — one of Spain's most prestigious viticultural appellations, with growing tourism demand and limited luxury hospitality supply.</p>
+            <p>The deal offers a 24-month senior position with quarterly distributions, backed by a first-lien mortgage on the property and an institutional collateral package designed to protect investor capital.</p>
+          </div>
+
+          <div class="section">
+            <h3>Key terms</h3>
+            <div class="terms-grid">
+              <div class="term-card"><div class="term-label">Target raise</div><div class="term-value">€11,500,000</div></div>
+              <div class="term-card"><div class="term-label">Target IRR</div><div class="term-value success">12.5%</div></div>
+              <div class="term-card"><div class="term-label">Maturity</div><div class="term-value">24 months</div></div>
+              <div class="term-card"><div class="term-label">Loan-to-value</div><div class="term-value">35%</div></div>
+              <div class="term-card"><div class="term-label">Distribution</div><div class="term-value">Quarterly</div></div>
+              <div class="term-card"><div class="term-label">Minimum ticket</div><div class="term-value">€100,000</div></div>
+              <div class="term-card"><div class="term-label">Currency</div><div class="term-value">EUR</div></div>
+              <div class="term-card"><div class="term-label">Collateral</div><div class="term-value" style="font-size:13px">First-lien mortgage</div></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Sponsor</h3>
+            <div class="sponsor-card">
+              <div class="sponsor-logo">SG</div>
+              <div>
+                <h4 class="sponsor-name">The Stein Group</h4>
+                <p class="sponsor-desc">Top-tier equity sponsor and world specialist in the development and management of luxury hotels, with 20+ properties under management across 9 countries. Long-standing institutional relationships in Iberian luxury hospitality.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Risk profile</h3>
+            <div class="risk-row"><span class="risk-dot risk-low"></span><span class="risk-text">Sponsor execution risk</span><span class="risk-label">Low · 20+ comparable assets</span></div>
+            <div class="risk-row"><span class="risk-dot risk-low"></span><span class="risk-text">Collateral coverage</span><span class="risk-label">Low · 35% LTV · first-lien</span></div>
+            <div class="risk-row"><span class="risk-dot risk-med"></span><span class="risk-text">Construction completion</span><span class="risk-label">Medium · 24-month timeline</span></div>
+            <div class="risk-row"><span class="risk-dot risk-med"></span><span class="risk-text">Tourism market exposure</span><span class="risk-label">Medium · macro-dependent</span></div>
+          </div>
+        </div>
+
+        <div class="col-side">
+          <div class="invest-card">
+            <div class="invest-head">
+              <div class="invest-status"><span class="dot"></span>OPEN  ·  78% raised</div>
+              <span style="font-size:11px;color:var(--text-secondary)">closes in 23 days</span>
+            </div>
+
+            <div class="raised-amt">€9,000,000</div>
+            <div class="raised-tgt">raised of €11,500,000 target</div>
+            <div class="raised-bar"><div class="raised-fl" style="width:78%"></div></div>
+            <div class="raised-meta"><span>43 investors</span><span>average ticket €209K</span></div>
+
+            <div class="invest-stats">
+              <div class="invest-stat"><div class="l">Target IRR</div><div class="v" style="color:var(--text-success)">12.5%</div></div>
+              <div class="invest-stat"><div class="l">Maturity</div><div class="v">24 months</div></div>
+              <div class="invest-stat"><div class="l">LTV</div><div class="v">35%</div></div>
+              <div class="invest-stat"><div class="l">Distribution</div><div class="v">Quarterly</div></div>
+            </div>
+
+            <label class="input-label">Investment amount (€)</label>
+            <input class="amount-input" type="text" value="100,000" />
+            <div class="quick-amounts">
+              <button>€100K</button>
+              <button>€250K</button>
+              <button>€500K</button>
+              <button>Max</button>
+            </div>
+
+            <div class="invest-summary">
+              <div class="invest-summary-row"><span>Investment</span><span class="val">€100,000.00</span></div>
+              <div class="invest-summary-row"><span>Expected returns (IRR)</span><span class="val">€25,000.00</span></div>
+              <div class="invest-summary-row"><span>Quarterly distribution</span><span class="val">€3,125.00</span></div>
+              <div class="invest-summary-row total"><span>Total projected</span><span class="val">€125,000.00</span></div>
+            </div>
+
+            <button class="cta-primary">Invest now</button>
+            <p class="disclaimer">Virtual portfolio simulation. Reserved to professional investors as defined under FinSA Art. 4-5.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">Yeldo Deal Tracker — Deal detail view · portfolio piece by Ferdinand Straehuber</div>
+</body>
+</html>
