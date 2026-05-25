@@ -1,6 +1,6 @@
 # Recruiter guide — 5 minute tour
 
-If you're reviewing this for the Yeldo Junior Fullstack Developer role, this doc gives you a structured tour. Everything below is clickable in the live demo at [yeldo-tracker.vercel.app](https://yeldo-tracker.vercel.app).
+If you're reviewing this for the Yeldo Junior Fullstack Developer role, this doc gives you a structured tour. Everything below is clickable in the live demo at [yeldo-deal-tracker.vercel.app](https://yeldo-deal-tracker.vercel.app).
 
 ---
 

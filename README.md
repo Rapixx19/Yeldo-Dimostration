@@ -8,7 +8,7 @@ A fullstack real-estate investment platform demonstrating production patterns fo
 
 ## 🎯 For Yeldo recruiters — start here
 
-**Live demo:** _Deploy in progress — see [`EXECUTION_PLAN.md`](./EXECUTION_PLAN.md) §5._
+**Live demo:** [yeldo-deal-tracker.vercel.app](https://yeldo-deal-tracker.vercel.app)
 **Repo:** [github.com/Rapixx19/Yeldo-Dimostration](https://github.com/Rapixx19/Yeldo-Dimostration)
 **One-click access:** click *"Sign in as recruiter"* on the landing page — no signup needed, pre-populated with 6 mock investments
 

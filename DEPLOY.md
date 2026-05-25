@@ -75,7 +75,7 @@ curl https://<your-app>.up.railway.app/api/deals | jq length
 ### Environment variables (Settings → Environment Variables)
 | Variable | Value |
 |---|---|
-| `VITE_API_URL` | the Railway URL (e.g., `https://yeldo-tracker.up.railway.app`) |
+| `VITE_API_URL` | the Railway URL (e.g., `https://yeldo-dimostration-production.up.railway.app`) |
 
 ### After both deploys exist
 1. Update Railway `CORS_ORIGIN` to the Vercel URL — redeploy

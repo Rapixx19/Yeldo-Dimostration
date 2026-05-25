@@ -109,7 +109,7 @@ Investment
 DATABASE_URL=postgresql://...
 JWT_SECRET=<32+ random chars>
 PORT=4000
-CORS_ORIGIN=https://yeldo-tracker.vercel.app
+CORS_ORIGIN=https://yeldo-deal-tracker.vercel.app
 SEED_DEMO_PASSWORD=demo123
 ```
 
@@ -128,7 +128,7 @@ In production, `VITE_API_URL` points to the Railway deployment URL.
 | Backend hosting | Railway (auto-deploy from `backend/` directory on push to `main`) |
 | Database | Supabase EU (Frankfurt) — free tier, 500MB |
 | Secrets | Vercel env vars (frontend), Railway env vars (backend) |
-| Custom domain | `yeldo-tracker.vercel.app` (or custom domain if needed) |
+| Custom domain | `yeldo-deal-tracker.vercel.app` (or custom domain if needed) |
 | HTTPS | Automatic via Vercel and Railway |
 | Backups | Supabase daily snapshots (7-day retention on free tier) |
 
