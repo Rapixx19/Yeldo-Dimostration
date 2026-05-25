@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/auth.js';
+import dealsRouter from './routes/deals.js';
 import { errorHandler } from './middleware/error.js';
 
 const app = express();
@@ -19,6 +20,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/deals', dealsRouter);
 
 app.use(errorHandler);
 
