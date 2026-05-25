@@ -6,6 +6,7 @@ import { KPICard } from '../components/KPICard';
 import { AllocationDonut } from '../components/AllocationDonut';
 import { UpcomingDistributions } from '../components/UpcomingDistributions';
 import { InvestmentsTable } from '../components/InvestmentsTable';
+import { ForecastChart } from '../components/ForecastChart';
 import { formatEuro, formatPercent } from '../lib/format';
 
 export function Portfolio() {
@@ -73,21 +74,7 @@ export function Portfolio() {
         />
       </div>
 
-      <div className="bg-soft border border-border-light rounded-lg p-5 mb-6">
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="font-medium text-brand-dark">TFT-inspired forecast</h2>
-          <span className="text-[11px] text-brand-accent uppercase tracking-wide">
-            Coming in spec 13
-          </span>
-        </div>
-        <p className="text-xs text-text-secondary leading-relaxed">
-          Multi-horizon portfolio forecast chart will land in Phase 4 (spec 13). See
-          <Link to="/about" className="text-brand-accent hover:underline ml-1">
-            ML methodology
-          </Link>{' '}
-          for the architecture.
-        </p>
-      </div>
+      <ForecastChart investments={investments} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <div className="bg-card border border-border-light rounded-lg p-5">
