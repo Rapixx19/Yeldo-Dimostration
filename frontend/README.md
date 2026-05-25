@@ -1,65 +1,50 @@
-# Frontend — Yeldo Deal Tracker
+# Frontend — Yeldo deal tracker
 
-React 18 + TypeScript + Vite + Tailwind CSS + Recharts.
+React 18 + Vite + TypeScript + Tailwind CSS + Recharts.
 
-## Quick start
+## Setup
 
 ```bash
 cp .env.example .env.local
-# Set VITE_API_URL=http://localhost:4000
-
 npm install
-npm run dev      # → http://localhost:5173
+npm run dev    # http://localhost:5173
 ```
 
-## Folder structure
+## Scripts
 
-```
-src/
-├── App.tsx                    # Top-level routing
-├── main.tsx                   # Entry point + auth provider
-├── api/
-│   ├── client.ts              # Axios instance with JWT interceptor
-│   ├── auth.ts                # Login, signup, demo-login
-│   ├── deals.ts               # Deal fetching
-│   └── investments.ts         # Portfolio fetching, create investment
-├── components/
-│   ├── ui/                    # Reusable atoms (Button, Card, Pill, etc.)
-│   ├── DealCard.tsx
-│   ├── ForecastChart.tsx      # TFT-inspired Recharts stacked area
-│   ├── SentimentWidget.tsx    # FinBERT chip + expanded widget
-│   ├── MLInfoModal.tsx        # Educational tooltips for ML features
-│   ├── FilterBar.tsx
-│   ├── InvestForm.tsx
-│   ├── KPICard.tsx
-│   └── Nav.tsx
-├── contexts/AuthContext.tsx   # Auth state + token management
-├── hooks/                     # useAuth, useDeals, useInvestments
-├── lib/
-│   ├── forecast.ts            # TFT-inspired forecast (heavily commented)
-│   ├── format.ts              # Currency, date, percentage formatters
-│   └── api.ts
-├── pages/
-│   ├── Landing.tsx            # /
-│   ├── Login.tsx              # /auth/login
-│   ├── Signup.tsx             # /auth/signup
-│   ├── Discover.tsx           # /discover
-│   ├── DealDetailPage.tsx     # /deals/:slug
-│   ├── Portfolio.tsx          # /portfolio
-│   ├── Dashboard.tsx          # /dashboard
-│   └── About.tsx              # /about (ML deep-dive)
-├── styles/brand.css           # Editorial Forest + Brass tokens
-└── types/api.ts               # Shared types
-```
+| Script | What |
+|---|---|
+| `npm run dev` | Vite dev server (port 5173) |
+| `npm run build` | typecheck + Vite production build → `dist/` |
+| `npm run preview` | preview the built bundle |
+| `npm run typecheck` | tsc --noEmit |
+| `npm run lint` | eslint |
 
 ## Environment variables
 
 | Variable | Required | Description |
 |---|---|---|
-| `VITE_API_URL` | ✅ | Backend URL |
+| `VITE_API_URL` | yes | Backend URL (e.g. `http://localhost:4000`) |
 
-## Notes for recruiters
+## Structure (target — populated through spec-05..10)
 
-Two most interesting files:
-1. **`src/lib/forecast.ts`** — TFT-inspired logic with full docblock
-2. **`src/components/MLInfoModal.tsx`** — ML educational modals
+```
+src/
+  features/
+    auth/         # login, signup, demo button, auth context
+    deals/        # discover page, deal detail, filter UI
+    portfolio/    # KPI cards, donut, distributions table
+    ml/           # SentimentWidget, ForecastChart, info modals
+  lib/            # axios client, formatters, hooks
+  routes/        # React Router composition
+  styles/        # brand tokens + globals
+  App.tsx
+  main.tsx
+```
+
+**Module rule:** features may not import from each other. Brand tokens live in `styles/brand.css` (consumed by `tailwind.config.ts`).
+
+## Two files worth reviewing first
+
+1. `src/features/ml/forecast.ts` — TFT-inspired logic with full docblock
+2. `src/features/ml/InfoModal.tsx` — ML educational modals (arXiv-linked)

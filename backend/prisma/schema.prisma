@@ -1,0 +1,105 @@
+// Yeldo deal tracker — Prisma schema
+// See docs/01-database-schema.md for the spec.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Instrument {
+  senior_loan
+  mezzanine
+  senior_debt
+  secured_mezzanine
+}
+
+enum Distribution {
+  quarterly
+  at_maturity
+}
+
+enum DealStatus {
+  open
+  closed
+  exited
+}
+
+enum SentimentLabel {
+  bullish
+  neutral
+  cautious
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime     @default(now())
+  investments  Investment[]
+
+  @@map("users")
+}
+
+model Deal {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  name          String
+  location      String
+  country       String // ISO 3166-1 alpha-2 (IT, ES, CH, DE, PT)
+  assetClass    String // "Hospitality", "Residential", etc.
+  instrument    Instrument
+  targetRaise   Float
+  raisedAmount  Float
+  targetIRR     Float
+  maturityMonths Int
+  loanToValue   Float
+  distribution  Distribution
+  minimumTicket Float
+  status        DealStatus @default(open)
+  startDate     DateTime
+  maturityDate  DateTime
+  closesAt      DateTime?
+
+  // FinBERT sentiment fields (computed at seed time, see docs/12-finbert-sentiment.md)
+  sentimentLabel   SentimentLabel
+  sentimentScore   Float
+  sentimentSignals Json
+
+  // Sponsor info
+  sponsorName          String
+  sponsorDescription   String
+  hasFirstLienMortgage Boolean @default(true)
+
+  // Risk profile — array of { category, severity, note }
+  risks Json
+
+  // Description / memo
+  description String  @db.Text
+  imageUrl    String?
+
+  createdAt   DateTime     @default(now())
+  investments Investment[]
+
+  @@map("deals")
+}
+
+model Investment {
+  id         String   @id @default(cuid())
+  userId     String
+  dealId     String
+  amount     Float
+  investedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deal Deal @relation(fields: [dealId], references: [id])
+
+  @@index([userId])
+  @@index([dealId])
+  @@map("investments")
+}

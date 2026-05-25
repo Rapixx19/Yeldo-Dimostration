@@ -1,0 +1,45 @@
+/* Editorial Forest + Brass — see BRAND_TOKENS.md for the full rationale. */
+:root {
+  /* Backgrounds */
+  --bg-page: #f8f5ee;
+  --bg-card: #ffffff;
+  --bg-soft: #f0ebe0;
+
+  /* Brand */
+  --brand-dark: #1c2820;
+  --brand-accent: #a87432;
+
+  /* Semantic */
+  --text-success: #4a7c3a;
+  --text-warning: #b45309;
+  --text-danger: #991b1b;
+
+  /* Text hierarchy */
+  --text-primary: #1c2820;
+  --text-secondary: #5a6b5f;
+  --text-tertiary: #8b9285;
+
+  /* Borders */
+  --border-light: rgba(28, 40, 32, 0.08);
+  --border-mid: rgba(28, 40, 32, 0.15);
+
+  /* Radius */
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Typography */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+}
