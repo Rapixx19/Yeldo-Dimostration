@@ -1,75 +1,110 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { loginRequest, signupRequest, demoLoginRequest } from '../api/auth';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
+import type { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 import type { AuthUser } from '../types/auth';
 
 interface AuthState {
   user: AuthUser | null;
   token: string | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   demoLogin: () => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
 
-const TOKEN_KEY = 'yeldo_token';
-const USER_KEY = 'yeldo_user';
+const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL ?? 'recruiter@yeldo-demo.app';
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD ?? 'demo123';
 
-function readStoredUser(): AuthUser | null {
-  const raw = localStorage.getItem(USER_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as AuthUser;
-  } catch {
-    localStorage.removeItem(USER_KEY);
-    return null;
-  }
-}
-
-function readStoredToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+function toAuthUser(u: SupabaseUser | null | undefined): AuthUser | null {
+  if (!u) return null;
+  const meta = u.user_metadata ?? {};
+  return {
+    id: u.id,
+    email: u.email ?? '',
+    name:
+      (meta.name as string | undefined) ??
+      (meta.full_name as string | undefined) ??
+      u.email?.split('@')[0] ??
+      '',
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Read synchronously on first render so ProtectedRoute sees the persisted
-  // token immediately. A useEffect-based hydration races with the first
-  // render and causes a "redirect to /auth/login → token reappears → redirect
-  // to /discover" loop on direct navigation to /portfolio (bug found via QA).
-  const [user, setUser] = useState<AuthUser | null>(readStoredUser);
-  const [token, setToken] = useState<string | null>(readStoredToken);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  function persist(nextUser: AuthUser, nextToken: string) {
-    localStorage.setItem(TOKEN_KEY, nextToken);
-    localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
-    setUser(nextUser);
-    setToken(nextToken);
-  }
+  useEffect(() => {
+    let cancelled = false;
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (cancelled) return;
+      setSession(data.session);
+      setUser(toAuthUser(data.session?.user));
+      setLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      setUser(toAuthUser(s?.user));
+      setLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const value = useMemo<AuthState>(
     () => ({
       user,
-      token,
+      token: session?.access_token ?? null,
+      loading,
       async login(email, password) {
-        const { user: u, token: t } = await loginRequest(email, password);
-        persist(u, t);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
       },
       async signup(email, password, name) {
-        const { user: u, token: t } = await signupRequest(email, password, name);
-        persist(u, t);
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { name } },
+        });
+        if (error) throw error;
+      },
+      async loginWithGoogle() {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: `${window.location.origin}/discover` },
+        });
+        if (error) throw error;
       },
       async demoLogin() {
-        const { user: u, token: t } = await demoLoginRequest();
-        persist(u, t);
+        const { error } = await supabase.auth.signInWithPassword({
+          email: DEMO_EMAIL,
+          password: DEMO_PASSWORD,
+        });
+        if (error) throw error;
       },
-      logout() {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-        setUser(null);
-        setToken(null);
+      async logout() {
+        await supabase.auth.signOut();
       },
     }),
-    [user, token],
+    [user, session, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

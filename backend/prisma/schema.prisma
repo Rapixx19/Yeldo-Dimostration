@@ -36,12 +36,15 @@ enum SentimentLabel {
 }
 
 model User {
-  id           String       @id @default(cuid())
-  email        String       @unique
-  passwordHash String
-  name         String
-  createdAt    DateTime     @default(now())
-  investments  Investment[]
+  // id matches auth.users.id from Supabase Auth — populated by a trigger
+  // (see migration 20260526_auth_to_supabase). Public.users holds app-domain
+  // fields; auth.users holds credentials and provider tokens.
+  id          String       @id @db.Uuid
+  email       String       @unique
+  name        String
+  avatarUrl   String?
+  createdAt   DateTime     @default(now())
+  investments Investment[]
 
   @@map("users")
 }
@@ -91,7 +94,7 @@ model Deal {
 
 model Investment {
   id         String   @id @default(cuid())
-  userId     String
+  userId     String   @db.Uuid
   dealId     String
   amount     Float
   investedAt DateTime @default(now())

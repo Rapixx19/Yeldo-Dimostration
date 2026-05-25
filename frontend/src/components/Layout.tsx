@@ -12,8 +12,8 @@ export function Layout() {
   const { user, token, logout } = useAuth();
   const nav = useNavigate();
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     nav('/');
   }
 

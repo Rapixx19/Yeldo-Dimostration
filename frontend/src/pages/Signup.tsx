@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { GoogleButton } from '../components/ui/GoogleButton';
 
 const schema = z.object({
   name: z.string().min(1, 'Name required'),
@@ -13,8 +13,15 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
+function messageOf(e: unknown): string {
+  if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+    return e.message;
+  }
+  return 'Signup failed';
+}
+
 export function Signup() {
-  const { signup, token } = useAuth();
+  const { signup, loginWithGoogle, token } = useAuth();
   const nav = useNavigate();
   const {
     register,
@@ -29,19 +36,33 @@ export function Signup() {
   async function onSubmit(data: FormData) {
     try {
       await signup(data.email, data.password, data.name);
-      toast.success('Welcome to Yeldo');
+      toast.success('Welcome to Yeldo — check your inbox to confirm');
       nav('/discover');
     } catch (e) {
-      const msg = isAxiosError(e)
-        ? ((e.response?.data as { error?: string } | undefined)?.error ?? 'Signup failed')
-        : 'Signup failed';
-      toast.error(msg);
+      toast.error(messageOf(e));
+    }
+  }
+
+  async function handleGoogle() {
+    try {
+      await loginWithGoogle();
+    } catch (e) {
+      toast.error(messageOf(e));
     }
   }
 
   return (
     <div className="max-w-md mx-auto py-12 px-6">
       <h2 className="text-2xl font-medium mb-6 text-brand-dark">Create your account</h2>
+
+      <GoogleButton onClick={handleGoogle} label="Sign up with Google" />
+
+      <div className="flex items-center gap-3 my-5">
+        <span className="flex-1 h-px bg-border-light" />
+        <span className="text-[11px] uppercase tracking-wide text-text-tertiary">or</span>
+        <span className="flex-1 h-px bg-border-light" />
+      </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-xs text-text-secondary mb-1.5">Name</label>

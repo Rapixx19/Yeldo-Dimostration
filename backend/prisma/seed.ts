@@ -1,9 +1,36 @@
 import 'dotenv/config';
 import { PrismaClient, type Instrument, type Distribution } from '@prisma/client';
-import bcrypt from 'bcrypt';
 import { computeSentiment } from '../src/services/sentiment.js';
+import { supabaseAdmin } from '../src/lib/supabase.js';
 
 const prisma = new PrismaClient();
+
+const DEMO_EMAIL = 'recruiter@yeldo-demo.app';
+const DEMO_NAME = 'Recruiter Demo';
+const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? 'demo123';
+
+async function ensureDemoAuthUser(): Promise<{ id: string; email: string }> {
+  // Look up existing — admin.listUsers is paginated; demo user is in the first page
+  const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({
+    page: 1,
+    perPage: 200,
+  });
+  if (listErr) throw listErr;
+
+  const existing = list.users.find((u) => u.email === DEMO_EMAIL);
+  if (existing) {
+    return { id: existing.id, email: existing.email ?? DEMO_EMAIL };
+  }
+
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    email: DEMO_EMAIL,
+    password: DEMO_PASSWORD,
+    email_confirm: true,
+    user_metadata: { name: DEMO_NAME },
+  });
+  if (error || !data.user) throw error ?? new Error('createUser returned no user');
+  return { id: data.user.id, email: data.user.email ?? DEMO_EMAIL };
+}
 
 interface SeedDeal {
   slug: string;
@@ -311,18 +338,16 @@ const DEMO_INVESTMENTS = [
 ];
 
 async function main() {
-  // 1. Demo user — idempotent
-  const passwordHash = await bcrypt.hash(process.env.SEED_DEMO_PASSWORD ?? 'demo123', 10);
+  // 1. Demo user — create in Supabase Auth first (the on_auth_user_created
+  // trigger then creates the public.users row). We upsert the public row too
+  // in case the trigger hasn't fired yet or this is re-running locally.
+  const authUser = await ensureDemoAuthUser();
   const demoUser = await prisma.user.upsert({
-    where: { email: 'recruiter@yeldo-demo.app' },
-    update: {},
-    create: {
-      email: 'recruiter@yeldo-demo.app',
-      passwordHash,
-      name: 'Recruiter Demo',
-    },
+    where: { id: authUser.id },
+    update: { email: authUser.email, name: DEMO_NAME },
+    create: { id: authUser.id, email: authUser.email, name: DEMO_NAME },
   });
-  console.log(`✓ Demo user: ${demoUser.email}`);
+  console.log(`✓ Demo user: ${demoUser.email} (auth.id=${authUser.id.slice(0, 8)}…)`);
 
   // 2. Deals with computed sentiment — idempotent on slug
   const dealsBySlug = new Map<string, { id: string; slug: string }>();
