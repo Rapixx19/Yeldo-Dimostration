@@ -8,12 +8,28 @@ A fullstack real-estate investment platform demonstrating production patterns fo
 
 ## 🎯 For Yeldo recruiters — start here
 
-**Live demo:** [yeldo-tracker.vercel.app](https://yeldo-tracker.vercel.app) *(replace once deployed)*
+**Live demo:** _Deploy in progress — see [`EXECUTION_PLAN.md`](./EXECUTION_PLAN.md) §5._
+**Repo:** [github.com/Rapixx19/Yeldo-Dimostration](https://github.com/Rapixx19/Yeldo-Dimostration)
 **One-click access:** click *"Sign in as recruiter"* on the landing page — no signup needed, pre-populated with 6 mock investments
 
 **5-minute walkthrough:** see [`RECRUITER_GUIDE.md`](./RECRUITER_GUIDE.md)
 **ML features deep-dive:** see [`ML_FEATURES.md`](./ML_FEATURES.md)
 **Every interactive element documented:** see [`INTERACTIONS.md`](./INTERACTIONS.md)
+**Build plan:** see [`EXECUTION_PLAN.md`](./EXECUTION_PLAN.md) — git workflow, module contracts, verification gates
+
+## 📸 Screenshots
+
+| Landing | Discover |
+|---|---|
+| ![Landing](./screenshots/01-landing.png) | ![Discover](./screenshots/02-discover.png) |
+
+| Deal detail (with FinBERT widget) | Portfolio (with TFT forecast) |
+|---|---|
+| ![Deal detail](./screenshots/03-deal-detail.png) | ![Portfolio](./screenshots/04-portfolio.png) |
+
+| About — ML methodology |
+|---|
+| ![About](./screenshots/05-about.png) |
 
 ### What you can actually do in the live demo
 
