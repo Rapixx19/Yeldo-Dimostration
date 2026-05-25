@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { GoogleButton } from '../components/ui/GoogleButton';
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -12,8 +12,15 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
+function messageOf(e: unknown): string {
+  if (e && typeof e === 'object' && 'message' in e && typeof e.message === 'string') {
+    return e.message;
+  }
+  return 'Login failed';
+}
+
 export function Login() {
-  const { login, demoLogin, token } = useAuth();
+  const { login, demoLogin, loginWithGoogle, token } = useAuth();
   const nav = useNavigate();
   const location = useLocation();
 
@@ -28,17 +35,15 @@ export function Login() {
     return <Navigate to="/discover" replace />;
   }
 
-  const redirectTo = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/discover';
+  const redirectTo =
+    (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/discover';
 
   async function onSubmit(data: FormData) {
     try {
       await login(data.email, data.password);
       nav(redirectTo);
     } catch (e) {
-      const msg = isAxiosError(e)
-        ? ((e.response?.data as { error?: string } | undefined)?.error ?? 'Login failed')
-        : 'Login failed';
-      toast.error(msg);
+      toast.error(messageOf(e));
     }
   }
 
@@ -51,14 +56,32 @@ export function Login() {
     }
   }
 
+  async function handleGoogle() {
+    try {
+      await loginWithGoogle();
+      // Supabase redirects the page — control does not return here on success
+    } catch (e) {
+      toast.error(messageOf(e));
+    }
+  }
+
   function fillDemo() {
-    setValue('email', 'recruiter@yeldo-demo.app');
-    setValue('password', 'demo123');
+    setValue('email', import.meta.env.VITE_DEMO_EMAIL ?? 'recruiter@yeldo-demo.app');
+    setValue('password', import.meta.env.VITE_DEMO_PASSWORD ?? 'demo123');
   }
 
   return (
     <div className="max-w-md mx-auto py-12 px-6">
       <h2 className="text-2xl font-medium mb-6 text-brand-dark">Sign in</h2>
+
+      <GoogleButton onClick={handleGoogle} label="Continue with Google" />
+
+      <div className="flex items-center gap-3 my-5">
+        <span className="flex-1 h-px bg-border-light" />
+        <span className="text-[11px] uppercase tracking-wide text-text-tertiary">or</span>
+        <span className="flex-1 h-px bg-border-light" />
+      </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-xs text-text-secondary mb-1.5">Email</label>
@@ -95,7 +118,7 @@ export function Login() {
 
       <div className="flex items-center gap-3 my-5">
         <span className="flex-1 h-px bg-border-light" />
-        <span className="text-[11px] uppercase tracking-wide text-text-tertiary">or</span>
+        <span className="text-[11px] uppercase tracking-wide text-text-tertiary">demo</span>
         <span className="flex-1 h-px bg-border-light" />
       </div>
 

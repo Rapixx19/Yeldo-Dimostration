@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import authRouter from './routes/auth.js';
 import dealsRouter from './routes/deals.js';
 import investmentsRouter, { portfolioRouter } from './routes/investments.js';
 import { errorHandler } from './middleware/error.js';
@@ -20,7 +19,6 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'yeldo-backend', ts: new Date().toISOString() });
 });
 
-app.use('/api/auth', authRouter);
 app.use('/api/deals', dealsRouter);
 app.use('/api/investments', investmentsRouter);
 app.use('/api/portfolio', portfolioRouter);

@@ -3,8 +3,3 @@ export interface AuthUser {
   email: string;
   name: string;
 }
-
-export interface AuthResponse {
-  user: AuthUser;
-  token: string;
-}
