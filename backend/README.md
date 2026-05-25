@@ -1,66 +1,72 @@
-# Backend — Yeldo Deal Tracker
+# Backend — Yeldo deal tracker
 
-Node.js 20 + Express + TypeScript + Prisma + PostgreSQL + JWT.
+Node 20 + Express + TypeScript + Prisma + Postgres (Supabase).
 
-## Quick start
+## Setup
 
 ```bash
 cp .env.example .env
+# Fill in DATABASE_URL, DIRECT_URL, JWT_SECRET
 npm install
-npx prisma migrate dev
-npm run seed
-npm run dev               # → http://localhost:4000
+npm run prisma:generate
+npm run prisma:migrate   # first run: prisma migrate dev --name init
+npm run seed             # populate demo user + 10 deals + 6 investments
+npm run dev              # http://localhost:4000
 ```
 
-## Folder structure
+## Scripts
+
+| Script | What |
+|---|---|
+| `npm run dev` | tsx watch on `src/index.ts` (port 4000) |
+| `npm run build` | tsc → `dist/` |
+| `npm run start` | run compiled `dist/index.js` |
+| `npm run typecheck` | tsc --noEmit |
+| `npm run lint` | eslint |
+| `npm run prisma:generate` | regen client |
+| `npm run prisma:migrate` | dev migration |
+| `npm run prisma:deploy` | apply migrations to a remote DB |
+| `npm run prisma:studio` | open Prisma Studio GUI |
+| `npm run seed` | run seed script |
+
+## Health check
 
 ```
-src/
-├── index.ts                   # Express app entry
-├── routes/
-│   ├── auth.ts                # POST /api/auth/{signup,login,demo-login}
-│   ├── deals.ts               # GET /api/deals, /api/deals/:slug
-│   └── investments.ts         # GET/POST /api/investments
-├── middleware/
-│   ├── auth.ts                # JWT verification (single point of auth)
-│   └── error.ts               # Centralized error handler
-├── services/
-│   ├── sentiment.ts           # FinBERT-style scoring (heavily commented)
-│   └── portfolio.ts           # IRR + KPI aggregation
-├── schemas/                   # Zod validation schemas
-└── lib/prisma.ts              # Prisma client singleton
-
-prisma/
-├── schema.prisma              # User, Deal, Investment, Distribution
-├── seed.ts                    # 10 deals + demo user + 6 investments
-└── migrations/
+GET /health → { ok: true, service: "yeldo-backend", ts: "..." }
 ```
 
 ## Environment variables
 
 | Variable | Required | Description |
 |---|---|---|
-| `DATABASE_URL` | ✅ | PostgreSQL connection string |
-| `JWT_SECRET` | ✅ | 32+ random chars |
-| `PORT` | ⚠️ | Defaults to 4000 |
-| `CORS_ORIGIN` | ✅ in prod | Frontend URL |
-| `SEED_DEMO_PASSWORD` | ⚠️ | Defaults to `demo123` |
+| `DATABASE_URL` | yes | Supabase pooled connection (Transaction pooler, port 6543) |
+| `DIRECT_URL` | yes | Supabase direct connection (port 5432, for migrations) |
+| `JWT_SECRET` | yes | 32+ random chars |
+| `JWT_EXPIRES_IN` | optional | Defaults to `7d` |
+| `BCRYPT_ROUNDS` | optional | Defaults to `10` |
+| `PORT` | optional | Defaults to `4000` |
+| `CORS_ORIGIN` | yes in prod | Comma-separated allowed origins |
+| `SEED_DEMO_PASSWORD` | optional | Defaults to `demo123` (seed-only) |
 
-## API endpoints
+## Structure (target — populated through spec-02..04)
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/signup` | ❌ | Create account |
-| POST | `/api/auth/login` | ❌ | Login → JWT |
-| POST | `/api/auth/demo-login` | ❌ | One-click demo login |
-| GET | `/api/deals` | ❌ | List deals (filters) |
-| GET | `/api/deals/:slug` | ❌ | Single deal detail |
-| POST | `/api/investments` | ✅ | Virtual invest |
-| GET | `/api/investments` | ✅ | User's investments |
-| GET | `/api/portfolio` | ✅ | Aggregated KPIs |
+```
+src/
+  domains/
+    auth/         # JWT, bcrypt, demo-login
+    deals/        # Deal listing/detail
+    investments/  # Investment + portfolio aggregates
+    ml/           # sentiment.ts (pure)
+  lib/            # prisma client, zod helpers, error middleware
+  index.ts        # composition root
+prisma/
+  schema.prisma
+  seed.ts
+```
 
-## Notes for recruiters
+**Module rule:** domains may not import from each other. Shared utilities live in `lib/`.
 
-Two most interesting files:
-1. **`src/services/sentiment.ts`** — FinBERT-inspired scoring with docblock
-2. **`src/middleware/auth.ts`** — JWT verification single source of truth
+## Two files worth reviewing first
+
+1. `src/domains/ml/sentiment.ts` — FinBERT-inspired deterministic scoring (heavily commented)
+2. `src/lib/auth-middleware.ts` — JWT verification single source of truth
