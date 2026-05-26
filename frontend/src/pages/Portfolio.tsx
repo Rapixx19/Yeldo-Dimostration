@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useInvestments } from '../hooks/useInvestments';
 import { usePortfolio } from '../hooks/usePortfolio';
+import { CompositionMetrics } from '../components/CompositionMetrics';
 import { UpcomingDistributions } from '../components/UpcomingDistributions';
 import { InvestmentsTable } from '../components/InvestmentsTable';
 import { formatEuro } from '../lib/format';
@@ -43,6 +44,7 @@ export function Portfolio() {
         </p>
       </header>
 
+      <CompositionMetrics investments={investments} />
       <UpcomingDistributions investments={investments} />
       <InvestmentsTable investments={investments} />
     </div>
