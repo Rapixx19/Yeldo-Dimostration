@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import type { Investment } from '../types/deal';
 import { Flag } from './Flag';
 import { MaturityProgressBar } from './MaturityProgressBar';
+import { SentimentChip } from './SentimentChip';
 import { formatEuro, formatPercent, instrumentLabel } from '../lib/format';
+import { weightedMaturity } from '../lib/portfolioStats';
 
-function weightedMaturity(investments: Investment[]): number {
-  const total = investments.reduce((s, i) => s + i.amount, 0);
-  if (total === 0) return 0;
-  const w = investments.reduce((s, i) => s + i.amount * i.deal.maturityMonths, 0);
-  return Math.round(w / total);
+function truncate(s: string, max: number): string {
+  if (s.length <= max) return s;
+  return s.slice(0, max - 1).trimEnd() + '…';
 }
 
 export function InvestmentsTable({ investments }: { investments: Investment[] }) {
@@ -35,6 +35,9 @@ export function InvestmentsTable({ investments }: { investments: Investment[] })
                 IRR
               </th>
               <th className="text-left px-5 py-2.5 font-normal border-b border-border-light">
+                Sentiment
+              </th>
+              <th className="text-left px-5 py-2.5 font-normal border-b border-border-light">
                 Maturity
               </th>
             </tr>
@@ -53,6 +56,9 @@ export function InvestmentsTable({ investments }: { investments: Investment[] })
                     <Flag country={inv.deal.country} />
                     <span className="font-medium">{inv.deal.name}</span>
                   </Link>
+                  <div className="text-[11px] text-text-secondary mt-0.5 ml-7 max-w-md">
+                    {truncate(inv.deal.sponsorDescription, 80)}
+                  </div>
                 </td>
                 <td className="px-5 py-3.5">
                   <span className="inline-block px-2 py-0.5 rounded-md text-[11px] font-medium bg-soft text-text-primary">
@@ -64,6 +70,12 @@ export function InvestmentsTable({ investments }: { investments: Investment[] })
                 </td>
                 <td className="px-5 py-3.5 text-right tabular-nums text-text-success font-medium">
                   {formatPercent(inv.deal.targetIRR)}
+                </td>
+                <td className="px-5 py-3.5">
+                  <SentimentChip
+                    label={inv.deal.sentimentLabel}
+                    score={inv.deal.sentimentScore}
+                  />
                 </td>
                 <td className="px-5 py-3.5">
                   <MaturityProgressBar

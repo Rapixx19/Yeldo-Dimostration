@@ -1,12 +1,12 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const NAV_LINKS = [
-  { to: '/discover', label: 'Discover' },
-  { to: '/portfolio', label: 'Portfolio', authRequired: true },
+const PRIMARY_NAV = [
   { to: '/dashboard', label: 'Dashboard', authRequired: true },
-  { to: '/about', label: 'About' },
+  { to: '/portfolio', label: 'Portfolio', authRequired: true },
+  { to: '/discover', label: 'Discover' },
 ];
+const SECONDARY_NAV = [{ to: '/about', label: 'About' }];
 
 export function Layout() {
   const { user, token, logout } = useAuth();
@@ -29,7 +29,23 @@ export function Layout() {
           </Link>
 
           <nav className="flex items-center gap-1 text-sm">
-            {NAV_LINKS.filter((l) => !l.authRequired || token).map((link) => (
+            {PRIMARY_NAV.filter((l) => !l.authRequired || token).map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-md transition ${
+                    isActive
+                      ? 'bg-soft text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary'
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            <span className="mx-2 h-4 w-px bg-border-light" aria-hidden />
+            {SECONDARY_NAV.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
