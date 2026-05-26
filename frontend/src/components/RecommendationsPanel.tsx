@@ -2,22 +2,24 @@ import { Link } from 'react-router-dom';
 import { useRecommendations } from '../hooks/useRecommendations';
 import { Flag } from './Flag';
 import { SentimentChip } from './SentimentChip';
+import { FactorBreakdown } from './FactorBreakdown';
 import { formatPercent } from '../lib/format';
 import type { Recommendation } from '../types/recommendation';
+
+const TOP_FACTORS = 3;
 
 export function RecommendationsPanel({ limit = 3 }: { limit?: number }) {
   const { data, isLoading } = useRecommendations(limit);
 
   return (
     <section className="bg-card border border-border-light rounded-lg p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="font-medium text-brand-dark">Recommended for you</h3>
-          <p className="text-[11px] text-text-tertiary mt-0.5">
-            Scored on diversification, risk, sentiment, and return — based on your current
-            portfolio.
-          </p>
-        </div>
+      <div className="mb-4">
+        <h3 className="font-medium text-brand-dark">Recommended for you</h3>
+        <p className="text-[11px] text-text-tertiary mt-0.5">
+          Weighted scoring across 5 factors — diversification (0.35), risk (0.25),
+          return (0.20), sentiment (0.15), alignment (0.05). All scores are continuous;
+          weights sum to 1.0 so confidence is interpretable as a percentage.
+        </p>
       </div>
 
       {isLoading ? (
@@ -38,7 +40,9 @@ export function RecommendationsPanel({ limit = 3 }: { limit?: number }) {
 }
 
 function RecommendationCard({ rec }: { rec: Recommendation }) {
-  const { deal, topReason } = rec;
+  const { deal, confidence, factors } = rec;
+  const top = factors.slice(0, TOP_FACTORS);
+
   return (
     <Link
       to={`/deals/${deal.slug}`}
@@ -61,18 +65,25 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
 
       <div className="flex items-start justify-between gap-2 mb-1">
         <div className="font-medium text-text-primary text-sm truncate">{deal.name}</div>
+        <span className="text-sm font-medium text-brand-dark tabular-nums shrink-0">
+          {Math.round(confidence * 100)}%
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <span className="text-[11px] text-text-secondary truncate">
+          {deal.location} · {formatPercent(deal.targetIRR)} IRR · {deal.loanToValue}% LTV
+        </span>
         <SentimentChip label={deal.sentimentLabel} score={deal.sentimentScore} />
       </div>
 
-      <div className="text-[11px] text-text-secondary mb-2">
-        {deal.location} · {formatPercent(deal.targetIRR)} IRR · {deal.loanToValue}% LTV
-      </div>
-
-      <div className="inline-flex items-start gap-1.5 text-[11px] text-text-primary bg-soft rounded-md px-2 py-1.5">
-        <span className="text-brand-accent font-medium uppercase tracking-wide text-[10px] mt-0.5">
-          Why
-        </span>
-        <span className="leading-snug">{topReason}</span>
+      <div className="border-t border-border-light pt-3 space-y-1.5">
+        <div className="text-[10px] uppercase tracking-wider text-text-tertiary mb-1.5">
+          Top contributors
+        </div>
+        {top.map((f) => (
+          <FactorBreakdown key={f.key} factor={f} />
+        ))}
       </div>
     </Link>
   );
