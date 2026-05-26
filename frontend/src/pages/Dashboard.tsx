@@ -3,7 +3,9 @@ import { useInvestments } from '../hooks/useInvestments';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { useAuth } from '../contexts/AuthContext';
 import { KPICard } from '../components/KPICard';
-import { AllocationDonut } from '../components/AllocationDonut';
+import { CountryAllocation } from '../components/CountryAllocation';
+import { AssetClassAllocation } from '../components/AssetClassAllocation';
+import { ConcentrationMetrics } from '../components/ConcentrationMetrics';
 import { ForecastChart } from '../components/ForecastChart';
 import { ActivityFeed } from '../components/ActivityFeed';
 import { formatEuro, formatPercent } from '../lib/format';
@@ -76,13 +78,13 @@ export function Dashboard() {
 
       <ForecastChart investments={investments} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-        <div className="bg-card border border-border-light rounded-lg p-5">
-          <h3 className="font-medium text-brand-dark mb-4">Country allocation</h3>
-          <AllocationDonut allocation={kpis.countryAllocation} />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6 mb-6">
+        <CountryAllocation allocation={kpis.countryAllocation} />
+        <AssetClassAllocation investments={investments} />
         <ActivityFeed />
       </div>
+
+      <ConcentrationMetrics investments={investments} />
     </div>
   );
 }
