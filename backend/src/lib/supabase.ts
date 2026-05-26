@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { jwtVerify } from 'jose';
+import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -17,14 +17,20 @@ export const supabaseAdmin = createClient(SUPABASE_URL, SERVICE_ROLE, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
+// New Supabase projects sign access tokens with asymmetric ES256 keys.
+// JWT_SECRET is kept only for legacy HS256 tokens (older sessions).
+const JWKS = createRemoteJWKSet(new URL(`${SUPABASE_URL}/auth/v1/.well-known/jwks.json`));
 const SECRET_BYTES = new TextEncoder().encode(JWT_SECRET);
 
 export async function verifySupabaseJWT(
   token: string,
 ): Promise<{ sub: string; email?: string }> {
-  const { payload } = await jwtVerify(token, SECRET_BYTES, {
-    audience: 'authenticated',
-  });
+  let payload: JWTPayload;
+  try {
+    ({ payload } = await jwtVerify(token, JWKS, { audience: 'authenticated' }));
+  } catch {
+    ({ payload } = await jwtVerify(token, SECRET_BYTES, { audience: 'authenticated' }));
+  }
   if (typeof payload.sub !== 'string') {
     throw new Error('JWT missing sub claim');
   }
