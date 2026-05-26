@@ -12,7 +12,7 @@ Open the live demo URL. You'll see a landing page with three calls-to-action:
 - **Sign up** — full signup flow if you want to test it
 - **Browse public deals** — anonymous mode
 
-Click *"Sign in as recruiter"* → auto-logs you in as `recruiter@yeldo-demo.app` with 6 pre-populated mock investments.
+Click *"Sign in as recruiter"* → auto-logs you in as `ferdinand.straehuber@gmail.com` with 6 pre-populated mock investments.
 
 **What this demonstrates:**
 - Frontend route protection (you couldn't reach `/portfolio` without auth)

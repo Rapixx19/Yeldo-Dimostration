@@ -13,7 +13,7 @@
 - [ ] `npm run seed` creates 10 deals across IT, ES, CH, DE
 - [ ] Each deal has realistic data based on Yeldo's actual deals
 - [ ] Each deal has sentiment computed by `services/sentiment.ts`
-- [ ] Demo user (`recruiter@yeldo-demo.app` / `demo123`) is created
+- [ ] Demo user (`ferdinand.straehuber@gmail.com` / `demo123`) is created
 - [ ] Demo user has 6 pre-populated investments across different deals/countries
 - [ ] Seed is idempotent (running twice doesn't duplicate)
 
@@ -298,10 +298,10 @@ async function main() {
   // 1. Create demo user (idempotent)
   const passwordHash = await bcrypt.hash(process.env.SEED_DEMO_PASSWORD || 'demo123', 10);
   const demoUser = await prisma.user.upsert({
-    where: { email: 'recruiter@yeldo-demo.app' },
+    where: { email: 'ferdinand.straehuber@gmail.com' },
     update: {},
     create: {
-      email: 'recruiter@yeldo-demo.app',
+      email: 'ferdinand.straehuber@gmail.com',
       passwordHash,
       name: 'Recruiter Demo',
     },
@@ -385,7 +385,7 @@ Add to `backend/package.json`:
 Create backend/prisma/seed.ts matching the spec.
 10 deals across IT, ES, CH, DE, PT with realistic data.
 Each deal's sentiment is computed by calling computeSentiment() from services/sentiment.ts.
-Demo user (recruiter@yeldo-demo.app) is created with 6 mock investments totaling ~€45,200.
+Demo user (ferdinand.straehuber@gmail.com) is created with 6 mock investments totaling ~€45,200.
 Seed is idempotent — uses prisma.user.upsert and prisma.deal.upsert, skips investment creation if any exist for the demo user.
 Add npm scripts: "seed" and "prisma:reset".
 ```

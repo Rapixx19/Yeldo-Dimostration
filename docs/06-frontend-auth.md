@@ -121,7 +121,7 @@ export function Login() {
   };
 
   const fillDemo = () => {
-    setValue('email', 'recruiter@yeldo-demo.app');
+    setValue('email', 'ferdinand.straehuber@gmail.com');
     setValue('password', 'demo123');
   };
 

@@ -119,7 +119,7 @@ npm run dev                # → http://localhost:5173
 ```
 
 After seeding, log in as:
-- **Email:** `recruiter@yeldo-demo.app`
+- **Email:** `ferdinand.straehuber@gmail.com`
 - **Password:** `demo123`
 
 ---
