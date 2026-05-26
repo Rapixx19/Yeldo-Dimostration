@@ -2,9 +2,9 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const PRIMARY_NAV = [
+  { to: '/discover', label: 'Discover' },
   { to: '/dashboard', label: 'Dashboard', authRequired: true },
   { to: '/portfolio', label: 'Portfolio', authRequired: true },
-  { to: '/discover', label: 'Discover' },
 ];
 const SECONDARY_NAV = [{ to: '/about', label: 'About' }];
 
