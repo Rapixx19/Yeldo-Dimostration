@@ -376,7 +376,12 @@ async function main() {
 
     const deal = await prisma.deal.upsert({
       where: { slug: d.slug },
-      update: { imageUrl: DEAL_IMAGES[d.slug] ?? null },
+      update: {
+        imageUrl: DEAL_IMAGES[d.slug] ?? null,
+        sentimentLabel: sentiment.label,
+        sentimentScore: sentiment.score,
+        sentimentSignals: sentiment.signals as unknown as object,
+      },
       create: {
         ...d,
         sentimentLabel: sentiment.label,
