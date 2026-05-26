@@ -28,7 +28,16 @@ export function DealCard({ deal }: { deal: Deal }) {
       to={`/deals/${deal.slug}`}
       className="block bg-card border border-border-light rounded-lg overflow-hidden hover:border-brand-accent transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
     >
-      <div className="h-36 relative bg-brand-dark p-3 flex items-end">
+      <div
+        className="h-36 relative p-3 flex items-end bg-brand-dark bg-cover bg-center"
+        style={
+          deal.imageUrl
+            ? {
+                backgroundImage: `linear-gradient(rgba(28,40,32,0) 50%, rgba(28,40,32,0.55)), url(${deal.imageUrl})`,
+              }
+            : undefined
+        }
+      >
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
           <span className="bg-page text-brand-dark px-2 py-0.5 rounded-full text-[10px] font-medium">
             Reserved to Professional Investors
