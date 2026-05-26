@@ -7,6 +7,7 @@ import { CountryAllocation } from '../components/CountryAllocation';
 import { AssetClassAllocation } from '../components/AssetClassAllocation';
 import { ConcentrationMetrics } from '../components/ConcentrationMetrics';
 import { ForecastChart } from '../components/ForecastChart';
+import { RecommendationsPanel } from '../components/RecommendationsPanel';
 import { ActivityFeed } from '../components/ActivityFeed';
 import { formatEuro, formatPercent } from '../lib/format';
 
@@ -78,7 +79,11 @@ export function Dashboard() {
 
       <ForecastChart investments={investments} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6 mb-6">
+      <div className="mt-6 mb-6">
+        <RecommendationsPanel />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <CountryAllocation allocation={kpis.countryAllocation} />
         <AssetClassAllocation investments={investments} />
         <ActivityFeed />
