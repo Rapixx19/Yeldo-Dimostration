@@ -5,7 +5,7 @@ import { supabaseAdmin } from '../src/lib/supabase.js';
 
 const prisma = new PrismaClient();
 
-const DEMO_EMAIL = 'recruiter@yeldo-demo.app';
+const DEMO_EMAIL = 'ferdinand.straehuber@gmail.com';
 const DEMO_NAME = 'Recruiter Demo';
 const DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD ?? 'demo123';
 

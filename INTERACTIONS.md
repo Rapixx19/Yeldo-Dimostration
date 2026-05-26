@@ -22,7 +22,7 @@ Complete catalogue of every interactive element in the live demo, page by page. 
 | Email input | Type | Real-time validation (regex + length) |
 | Password input | Type | Real-time validation (min 6 chars), show/hide eye icon |
 | *"Sign in"* / *"Sign up"* button | Click | POSTs to `/api/auth/login` or `/api/auth/signup`; on success stores JWT in `localStorage`, redirects to `/discover` |
-| *"Use demo account"* button (login only) | Click | Pre-fills `recruiter@yeldo-demo.app` + `demo123`, submits |
+| *"Use demo account"* button (login only) | Click | Pre-fills `ferdinand.straehuber@gmail.com` + `demo123`, submits |
 | Error toast | Auto-shown | If credentials invalid or email taken |
 
 ---

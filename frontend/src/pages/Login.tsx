@@ -66,7 +66,7 @@ export function Login() {
   }
 
   function fillDemo() {
-    setValue('email', import.meta.env.VITE_DEMO_EMAIL ?? 'recruiter@yeldo-demo.app');
+    setValue('email', import.meta.env.VITE_DEMO_EMAIL ?? 'ferdinand.straehuber@gmail.com');
     setValue('password', import.meta.env.VITE_DEMO_PASSWORD ?? 'demo123');
   }
 

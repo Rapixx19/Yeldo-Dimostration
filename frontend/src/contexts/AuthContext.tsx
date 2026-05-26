@@ -23,7 +23,7 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null);
 
-const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL ?? 'recruiter@yeldo-demo.app';
+const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL ?? 'ferdinand.straehuber@gmail.com';
 const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD ?? 'demo123';
 
 function toAuthUser(u: SupabaseUser | null | undefined): AuthUser | null {

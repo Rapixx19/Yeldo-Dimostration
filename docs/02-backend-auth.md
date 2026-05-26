@@ -90,7 +90,7 @@ export async function login(email: string, password: string) {
 
 export async function demoLogin() {
   const user = await prisma.user.findUnique({
-    where: { email: 'recruiter@yeldo-demo.app' },
+    where: { email: 'ferdinand.straehuber@gmail.com' },
   });
   if (!user) throw new Error('DEMO_USER_NOT_SEEDED');
   return { user, token: signToken(user.id) };
