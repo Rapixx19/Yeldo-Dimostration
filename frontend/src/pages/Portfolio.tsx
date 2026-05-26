@@ -3,6 +3,8 @@ import { useInvestments } from '../hooks/useInvestments';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { CompositionMetrics } from '../components/CompositionMetrics';
 import { UpcomingDistributions } from '../components/UpcomingDistributions';
+import { InstrumentBreakdown } from '../components/InstrumentBreakdown';
+import { LiquidityTimeline } from '../components/LiquidityTimeline';
 import { InvestmentsTable } from '../components/InvestmentsTable';
 import { formatEuro } from '../lib/format';
 
@@ -45,7 +47,16 @@ export function Portfolio() {
       </header>
 
       <CompositionMetrics investments={investments} />
-      <UpcomingDistributions investments={investments} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <UpcomingDistributions investments={investments} />
+        <InstrumentBreakdown investments={investments} />
+      </div>
+
+      <div className="mb-6">
+        <LiquidityTimeline investments={investments} />
+      </div>
+
       <InvestmentsTable investments={investments} />
     </div>
   );
