@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import activityRouter from './routes/activity.js';
 import dealsRouter from './routes/deals.js';
+import healthRouter from './routes/health.js';
 import investmentsRouter, { portfolioRouter } from './routes/investments.js';
 import recommendationsRouter from './routes/recommendations.js';
 import { errorHandler } from './middleware/error.js';
@@ -17,10 +18,7 @@ const corsOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 
-app.get('/health', (_req, res) => {
-  res.json({ ok: true, service: 'yeldo-backend', ts: new Date().toISOString() });
-});
-
+app.use('/health', healthRouter);
 app.use('/api/deals', dealsRouter);
 app.use('/api/investments', investmentsRouter);
 app.use('/api/portfolio', portfolioRouter);
