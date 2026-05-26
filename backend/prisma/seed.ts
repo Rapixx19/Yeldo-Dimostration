@@ -32,6 +32,21 @@ async function ensureDemoAuthUser(): Promise<{ id: string; email: string }> {
   return { id: data.user.id, email: data.user.email ?? DEMO_EMAIL };
 }
 
+// Deal hero images — themed Unsplash photos (free CDN, stable URLs).
+// To migrate to Supabase Storage later, replace URLs with the public bucket URLs.
+const DEAL_IMAGES: Record<string, string> = {
+  'mas-den-bruno': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop',
+  'rovello-14': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop',
+  'varedo-ex-snia': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop',
+  'louis-casai': 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format&fit=crop',
+  'berlin-mitte-lofts': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop',
+  'costa-brava-villas': 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop',
+  'alpine-resort-cortina': 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop',
+  'lisbon-waterfront': 'https://images.unsplash.com/photo-1551776235-dde6d482980b?w=800&auto=format&fit=crop',
+  'madrid-prime-office': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop',
+  'zurich-student-housing': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop',
+};
+
 interface SeedDeal {
   slug: string;
   name: string;
@@ -361,13 +376,14 @@ async function main() {
 
     const deal = await prisma.deal.upsert({
       where: { slug: d.slug },
-      update: {},
+      update: { imageUrl: DEAL_IMAGES[d.slug] ?? null },
       create: {
         ...d,
         sentimentLabel: sentiment.label,
         sentimentScore: sentiment.score,
         sentimentSignals: sentiment.signals as unknown as object,
         risks: d.risks as unknown as object,
+        imageUrl: DEAL_IMAGES[d.slug] ?? null,
       },
     });
     dealsBySlug.set(deal.slug, { id: deal.id, slug: deal.slug });
