@@ -6,6 +6,7 @@ import dealsRouter from './routes/deals.js';
 import healthRouter from './routes/health.js';
 import investmentsRouter, { portfolioRouter } from './routes/investments.js';
 import recommendationsRouter from './routes/recommendations.js';
+import searchRouter from './routes/search.js';
 import { errorHandler } from './middleware/error.js';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/investments', investmentsRouter);
 app.use('/api/portfolio', portfolioRouter);
 app.use('/api/activity', activityRouter);
 app.use('/api/recommendations', recommendationsRouter);
+app.use('/api/search', searchRouter);
 
 app.use(errorHandler);
 
