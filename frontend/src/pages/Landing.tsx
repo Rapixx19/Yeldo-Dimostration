@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { ActivityTicker } from '../components/ActivityTicker';
 
 export function Landing() {
   const nav = useNavigate();
@@ -29,6 +30,8 @@ export function Landing() {
         investment platforms. Built with React, Express, PostgreSQL, and two ML
         features citing real research.
       </p>
+
+      <ActivityTicker />
 
       <div className="flex flex-col sm:flex-row gap-3 mb-12">
         <button
