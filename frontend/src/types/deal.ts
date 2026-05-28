@@ -52,6 +52,7 @@ export interface Deal {
   risks: Risk[];
   description: string;
   imageUrl: string | null;
+  pdfUrl: string | null;
   createdAt: string;
   events?: DealEvent[];
 }
