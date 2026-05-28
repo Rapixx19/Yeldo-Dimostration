@@ -20,8 +20,21 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function DealCard({ deal }: { deal: Deal }) {
-  const raisePct = Math.min(100, (deal.raisedAmount / deal.targetRaise) * 100);
+/**
+ * Optional live override for the raise progress. Passed in by Discover
+ * when it has a Realtime subscription open. Format: { raisedAmount, pulsing }.
+ * If omitted the card uses the deal's static raisedAmount.
+ */
+interface LiveRaise {
+  raisedAmount: number;
+  pulsing: boolean;
+}
+
+export function DealCard({ deal, live }: { deal: Deal; live?: LiveRaise }) {
+  const raisedAmount = live?.raisedAmount ?? deal.raisedAmount;
+  const pulsing = !!live?.pulsing;
+  const raisePct = Math.min(100, (raisedAmount / deal.targetRaise) * 100);
+  const isActivelyRaising = deal.status === 'open' && raisedAmount < deal.targetRaise;
 
   return (
     <Link
@@ -66,12 +79,26 @@ export function DealCard({ deal }: { deal: Deal }) {
         </div>
 
         <div className="w-full h-1 bg-soft rounded-full overflow-hidden mb-2">
-          <div className="h-full bg-text-success" style={{ width: `${raisePct}%` }} />
+          <div
+            className="h-full bg-text-success transition-[width] duration-700 ease-out"
+            style={{ width: `${raisePct}%` }}
+          />
         </div>
-        <div className="flex justify-between text-[11px] text-text-secondary mb-3">
-          <span>Raised</span>
-          <span className="font-medium text-text-primary">
-            {formatCompactEuro(deal.raisedAmount)} / {formatCompactEuro(deal.targetRaise)}
+        <div className="flex justify-between items-center text-[11px] text-text-secondary mb-3">
+          <span className="flex items-center gap-1.5">
+            <span>Raised</span>
+            {isActivelyRaising && (
+              <span
+                className={`inline-flex items-center gap-1 text-text-danger font-medium ${pulsing ? 'animate-pulse' : ''}`}
+                aria-label="actively raising — live updates"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-text-danger" />
+                LIVE
+              </span>
+            )}
+          </span>
+          <span className="font-medium text-text-primary tabular-nums">
+            {formatCompactEuro(raisedAmount)} / {formatCompactEuro(deal.targetRaise)}
           </span>
         </div>
 

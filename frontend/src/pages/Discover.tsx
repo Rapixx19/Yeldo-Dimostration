@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useDeals } from '../hooks/useDeals';
+import { useDealsLive } from '../hooks/useDealsLive';
 import { useSemanticSearch } from '../hooks/useSemanticSearch';
 import { DealCard } from '../components/DealCard';
 import { FilterBar } from '../components/FilterBar';
@@ -29,6 +30,22 @@ export function Discover() {
   // In semantic mode with a non-empty query: show ranked results with
   // similarity badges. Otherwise fall back to the keyword grid.
   const showSemantic = mode === 'semantic' && search.trim().length > 0;
+
+  // Visible deals depend on mode. In semantic mode the visible set is
+  // the semantic results; otherwise it's the keyword-filtered list.
+  const visibleDeals = showSemantic
+    ? semantic.data.map((r) => r.deal)
+    : keywordFiltered;
+
+  // Subscribe once for the whole grid — one Realtime channel covers
+  // every visible deal via an IN-filter (see useDealsLive).
+  const visibleIds = useMemo(() => visibleDeals.map((d) => d.id), [visibleDeals]);
+  const initialRaised = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const d of visibleDeals) m[d.id] = d.raisedAmount;
+    return m;
+  }, [visibleDeals]);
+  const live = useDealsLive(visibleIds, initialRaised);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
@@ -69,7 +86,7 @@ export function Discover() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {keywordFiltered.map((deal) => (
-            <DealCard key={deal.id} deal={deal} />
+            <DealCard key={deal.id} deal={deal} live={live[deal.id]} />
           ))}
         </div>
       )}
@@ -101,7 +118,7 @@ export function Discover() {
             <span className="absolute -top-2 left-3 z-10 bg-brand-dark text-page text-[10px] font-medium px-2 py-0.5 rounded-full shadow-sm">
               {Math.round(similarity * 100)}% match
             </span>
-            <DealCard deal={deal} />
+            <DealCard deal={deal} live={live[deal.id]} />
           </div>
         ))}
       </div>
