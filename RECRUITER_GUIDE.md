@@ -81,6 +81,28 @@ Navigate to `/portfolio`. You'll see:
 
 ---
 
+## 🤖 Optional — see the realtime features in motion
+
+The Dashboard activity feed and the deal-card progress bars are both
+driven by Supabase Realtime — they update automatically when anyone
+invests. For a full live demonstration without you having to keep
+clicking *Invest*, clone the repo and run the demo activity bot in a
+side terminal:
+
+```sh
+cd backend
+npm install
+npm run bot:demo
+```
+
+Every 60–90 seconds the bot picks a random open deal and writes one
+virtual investment. Within ~1 second the live dashboard ticker and
+the deal's progress bar light up. Ctrl+C to stop.
+
+Source: [`backend/scripts/demo-activity-bot.ts`](./backend/scripts/demo-activity-bot.ts).
+
+---
+
 ## ⏱ The 15-minute deep dive
 
 If you have more time, here's what's worth looking at:

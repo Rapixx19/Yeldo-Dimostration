@@ -20,6 +20,7 @@
     "seed": "tsx prisma/seed.ts",
     "compute:embeddings": "tsx scripts/compute-embeddings.ts",
     "generate:pdfs": "tsx scripts/generate-deal-pdfs.ts",
+    "bot:demo": "tsx scripts/demo-activity-bot.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
