@@ -31,10 +31,20 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET /api/deals/:slug — single deal
+// GET /api/deals/:slug — single deal + its event timeline (newest first)
+//
+// Events are bundled into this endpoint rather than living on a separate
+// /events route so the Updates tab on the deal page is instant — no extra
+// roundtrip when the user clicks it. Payload overhead is small (~50 bytes
+// per event × ~5 events = under 300 bytes added).
 router.get('/:slug', async (req, res, next) => {
   try {
-    const deal = await prisma.deal.findUnique({ where: { slug: req.params.slug } });
+    const deal = await prisma.deal.findUnique({
+      where: { slug: req.params.slug },
+      include: {
+        events: { orderBy: { createdAt: 'desc' } },
+      },
+    });
     if (!deal) {
       throw new Error('DEAL_NOT_FOUND');
     }

@@ -93,8 +93,22 @@ model Deal {
 
   createdAt   DateTime     @default(now())
   investments Investment[]
+  events      DealEvent[]
 
   @@map("deals")
+}
+
+model DealEvent {
+  id        String   @id @default(cuid())
+  dealId    String
+  eventType String // 'launch' | 'milestone' | 'news' | 'status_change' (free-form so new types don't need a migration)
+  message   String
+  createdAt DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId])
+  @@map("deal_events")
 }
 
 model Investment {

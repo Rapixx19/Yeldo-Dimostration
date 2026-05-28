@@ -6,6 +6,7 @@ import { DealTabs, type DealTab } from '../components/DealTabs';
 import { DealFinancials } from '../components/DealFinancials';
 import { DealRisks } from '../components/DealRisks';
 import { DealSponsor } from '../components/DealSponsor';
+import { DealUpdates } from '../components/DealUpdates';
 import { KeyTermsGrid } from '../components/KeyTermsGrid';
 import { SponsorCard } from '../components/SponsorCard';
 import { RiskProfile } from '../components/RiskProfile';
@@ -72,10 +73,13 @@ export function DealDetailPage() {
 
           {tab === 'sponsor' && <DealSponsor deal={deal} />}
 
+          {tab === 'updates' && <DealUpdates events={deal.events} />}
+
           {tab !== 'overview' &&
             tab !== 'financials' &&
             tab !== 'risks' &&
-            tab !== 'sponsor' && (
+            tab !== 'sponsor' &&
+            tab !== 'updates' && (
             <div className="bg-card border border-border-light rounded-lg p-8 text-center text-sm text-text-secondary">
               Detailed <strong>{tab}</strong> view coming in a follow-up PR.
             </div>
