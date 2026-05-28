@@ -18,6 +18,7 @@
     "prisma:reset": "prisma migrate reset --force",
     "prisma:baseline": "prisma migrate resolve --applied 20260525200615_init",
     "seed": "tsx prisma/seed.ts",
+    "compute:embeddings": "tsx scripts/compute-embeddings.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
@@ -32,6 +33,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "jose": "^5.9.6",
+    "openai": "^6.39.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
