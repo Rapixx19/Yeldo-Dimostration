@@ -709,36 +709,56 @@ product feel resilient.
 
 ---
 
-### Q4 — Lazy-load Recharts (~1h)
+### Q4 — Defer Recharts on DealDetailPage (~30min, shipped)
 
-**Goal.** Split the 403 KB `vendor-recharts` chunk out of the initial
-bundle. Only fetch when the user opens a page that uses charts.
+**Status.** Shipped. Scope was narrower than the original plan after
+measuring the actual bundle behavior — see "Revised after measurement"
+below.
 
-**Why.** First paint includes 403 KB of recharts even on Landing where
-no chart is rendered. Code-splitting cuts initial bundle by ~25%.
-Measurable Web-Vitals improvement, real engineering signal.
+**Original (incorrect) premise.** "First paint includes 403 KB of
+recharts even on Landing where no chart is rendered. Code-splitting
+cuts initial bundle by ~25%."
 
-**Files.**
-- `frontend/src/components/ForecastChart.tsx` — wrap in `React.lazy`
-- `frontend/src/components/DonutChart.tsx` — same
-- Any page that imports them — wrap in `<Suspense>` with a skeleton
+**Revised after measurement.** The original plan assumed Recharts
+sits on Landing's critical path. It doesn't. Inspecting the build:
 
-**Code shape.**
-```tsx
-// In pages/Dashboard.tsx and pages/Portfolio.tsx:
-const ForecastChart = lazy(() => import('../components/ForecastChart').then(m => ({ default: m.ForecastChart })));
-...
-<Suspense fallback={<ChartSkeleton />}>
-  <ForecastChart investments={investments} />
-</Suspense>
-```
+  Landing's HTML modulepreloads only:
+    vendor-react      (164 KB raw / 54 KB gzipped)
+    vendor-toast      ( 12 KB raw /  5 KB gzipped)
+    vendor-forms      ( 80 KB raw / 22 KB gzipped)
+    + index.js        (~230 KB / 62 KB gzipped, contains Landing source)
+
+  vendor-recharts is NOT preloaded. It's lazily fetched when a page
+  that uses it activates (Dashboard, Portfolio, or DealDetailPage).
+
+**What did need fixing.** `DealDetailPage` statically imported
+`DealFinancials`, which statically imports `CashflowChart`, which
+imports `recharts`. So opening any deal-detail page downloaded
+the 410 KB recharts chunk even if the user never clicked the
+Financials tab. The other tabs (Overview, Risks, Sponsor, Updates,
+Documents) don't need recharts.
+
+**Fix.** Wrap `DealFinancials` in `React.lazy` inside
+`pages/DealDetailPage.tsx`. recharts is now only fetched when
+`tab === 'financials'` renders for the first time.
+
+**Result.** A new `DealFinancials-*.js` chunk (5.30 KB raw /
+1.84 KB gzipped) holds the static deps; recharts pulls in only
+when the user opens the Financials tab.
+
+**Not done (would not help).** Lazy-loading `ForecastChart` /
+`DonutChart` on Dashboard or Portfolio — those pages render charts
+on first paint, so lazy would just delay the first paint.
 
 **Test plan.**
-- `npm run build` shows recharts in its own chunk that's NOT in the
-  index chunk's `<script>` tag list.
-- Lighthouse on Landing: First Contentful Paint improves measurably.
+- `npm run build` outputs a `DealFinancials-*.js` chunk separate
+  from `DealDetailPage-*.js`.
+- The DealDetailPage chunk's static dep graph does NOT reference
+  recharts.
 
-**Effort.** 1h.
+**Lesson learned.** Measure before optimizing. The original V2 plan
+assumed the wrong cost model; a 5-second `npm run build` + look at
+the chunk list saved an hour of work in the wrong place.
 
 **Depends on.** Nothing.
 

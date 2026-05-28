@@ -1,9 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { useDeal } from '../hooks/useDeal';
 import { DealHero } from '../components/DealHero';
 import { DealTabs, type DealTab } from '../components/DealTabs';
-import { DealFinancials } from '../components/DealFinancials';
 import { DealRisks } from '../components/DealRisks';
 import { DealSponsor } from '../components/DealSponsor';
 import { DealDocuments } from '../components/DealDocuments';
@@ -13,6 +12,21 @@ import { SponsorCard } from '../components/SponsorCard';
 import { RiskProfile } from '../components/RiskProfile';
 import { SentimentWidget } from '../components/SentimentWidget';
 import { InvestForm } from '../components/InvestForm';
+
+// Lazy-load only the Financials tab. It's the only tab on this page
+// that pulls in recharts (~410 KB gzipped), so a static import would
+// force every deal-detail page to download recharts even when the
+// user never clicks the Financials tab.
+//
+// Lazy here means: recharts ships in its own chunk and is requested
+// only when tab === 'financials' renders for the first time.
+const DealFinancials = lazy(() =>
+  import('../components/DealFinancials').then((m) => ({ default: m.DealFinancials })),
+);
+
+function TabFallback() {
+  return <div className="py-16 text-center text-text-secondary">Loading…</div>;
+}
 
 export function DealDetailPage() {
   const { slug } = useParams();
@@ -68,7 +82,11 @@ export function DealDetailPage() {
             </>
           )}
 
-          {tab === 'financials' && <DealFinancials deal={deal} />}
+          {tab === 'financials' && (
+            <Suspense fallback={<TabFallback />}>
+              <DealFinancials deal={deal} />
+            </Suspense>
+          )}
 
           {tab === 'risks' && <DealRisks deal={deal} />}
 
