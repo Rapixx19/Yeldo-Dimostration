@@ -4,7 +4,7 @@ const TABS: Array<{ id: DealTab; label: string; comingSoon?: boolean }> = [
   { id: 'overview', label: 'Overview' },
   { id: 'financials', label: 'Financials' },
   { id: 'sponsor', label: 'Sponsor', comingSoon: true },
-  { id: 'risks', label: 'Risks', comingSoon: true },
+  { id: 'risks', label: 'Risks' },
   { id: 'updates', label: 'Updates', comingSoon: true },
   { id: 'documents', label: 'Documents', comingSoon: true },
 ];
