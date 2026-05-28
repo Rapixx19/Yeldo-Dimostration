@@ -2,7 +2,7 @@ export type DealTab = 'overview' | 'financials' | 'sponsor' | 'risks' | 'updates
 
 const TABS: Array<{ id: DealTab; label: string; comingSoon?: boolean }> = [
   { id: 'overview', label: 'Overview' },
-  { id: 'financials', label: 'Financials', comingSoon: true },
+  { id: 'financials', label: 'Financials' },
   { id: 'sponsor', label: 'Sponsor', comingSoon: true },
   { id: 'risks', label: 'Risks', comingSoon: true },
   { id: 'updates', label: 'Updates', comingSoon: true },

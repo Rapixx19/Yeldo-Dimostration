@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useDeal } from '../hooks/useDeal';
 import { DealHero } from '../components/DealHero';
 import { DealTabs, type DealTab } from '../components/DealTabs';
+import { DealFinancials } from '../components/DealFinancials';
 import { KeyTermsGrid } from '../components/KeyTermsGrid';
 import { SponsorCard } from '../components/SponsorCard';
 import { RiskProfile } from '../components/RiskProfile';
@@ -44,7 +45,7 @@ export function DealDetailPage() {
         <div>
           <DealTabs active={tab} onChange={setTab} />
 
-          {tab === 'overview' ? (
+          {tab === 'overview' && (
             <>
               <section className="bg-card border border-border-light rounded-lg p-5 mb-6">
                 <h2 className="text-base font-medium text-brand-dark mb-2">
@@ -61,10 +62,13 @@ export function DealDetailPage() {
 
               <RiskProfile risks={deal.risks} />
             </>
-          ) : (
+          )}
+
+          {tab === 'financials' && <DealFinancials deal={deal} />}
+
+          {tab !== 'overview' && tab !== 'financials' && (
             <div className="bg-card border border-border-light rounded-lg p-8 text-center text-sm text-text-secondary">
-              Detailed <strong>{tab}</strong> view coming in v2 — the spec for it lives in
-              <code className="text-brand-accent"> docs/10-frontend-dashboard.md</code>.
+              Detailed <strong>{tab}</strong> view coming in a follow-up PR.
             </div>
           )}
         </div>
