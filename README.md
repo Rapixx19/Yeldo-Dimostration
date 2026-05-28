@@ -12,7 +12,9 @@ A fullstack real-estate investment platform demonstrating production patterns fo
 **Repo:** [github.com/Rapixx19/Yeldo-Dimostration](https://github.com/Rapixx19/Yeldo-Dimostration)
 **One-click access:** click *"Sign in as recruiter"* on the landing page — no signup needed, pre-populated with 6 mock investments
 
-**5-minute walkthrough:** see [`RECRUITER_GUIDE.md`](./RECRUITER_GUIDE.md)
+**5-minute product walkthrough:** see [`RECRUITER_GUIDE.md`](./RECRUITER_GUIDE.md)
+**5-minute code walkthrough:** see [`TOUR.md`](./TOUR.md) — repo structure, where to find each feature, conventions
+**Forward roadmap:** see [`V2_PLAN.md`](./V2_PLAN.md) — what's shipped + what's planned, per-feature decision logs
 **ML features deep-dive:** see [`ML_FEATURES.md`](./ML_FEATURES.md)
 **Every interactive element documented:** see [`INTERACTIONS.md`](./INTERACTIONS.md)
 **Build plan:** see [`EXECUTION_PLAN.md`](./EXECUTION_PLAN.md) — git workflow, module contracts, verification gates

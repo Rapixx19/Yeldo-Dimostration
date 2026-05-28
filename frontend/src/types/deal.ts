@@ -14,6 +14,16 @@ export interface Risk {
   note: string;
 }
 
+export type DealEventType = 'launch' | 'milestone' | 'news' | 'status_change';
+
+export interface DealEvent {
+  id: string;
+  dealId: string;
+  eventType: DealEventType | string;
+  message: string;
+  createdAt: string;
+}
+
 export interface Deal {
   id: string;
   slug: string;
@@ -43,6 +53,7 @@ export interface Deal {
   description: string;
   imageUrl: string | null;
   createdAt: string;
+  events?: DealEvent[];
 }
 
 export interface Investment {
