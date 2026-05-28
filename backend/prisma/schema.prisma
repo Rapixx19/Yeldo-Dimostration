@@ -91,6 +91,11 @@ model Deal {
   // in services/semanticSearch.ts, where pgvector's <=> operator lives.
   embedding   Unsupported("vector(1536)")?
 
+  // URL of the deal's term-sheet PDF in Supabase Storage (V2 Tab 4).
+  // Populated by backend/scripts/generate-deal-pdfs.ts. Null until the
+  // script has been run for this deal.
+  pdfUrl      String?
+
   createdAt   DateTime     @default(now())
   investments Investment[]
   events      DealEvent[]
