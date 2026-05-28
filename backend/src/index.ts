@@ -1,4 +1,11 @@
 import 'dotenv/config';
+import { initSentry } from './lib/sentry.js';
+
+// Sentry must be initialised before any other module that might throw
+// — its global handlers attach during init(). No-op when SENTRY_DSN
+// is unset (see lib/sentry.ts).
+initSentry();
+
 import express from 'express';
 import cors from 'cors';
 import activityRouter from './routes/activity.js';
