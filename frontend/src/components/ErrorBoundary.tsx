@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Sentry } from '../lib/sentry';
 
 interface Props {
   children: ReactNode;
@@ -34,8 +35,13 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   override componentDidCatch(error: Error, info: ErrorInfo): void {
-    // Single sink for unhandled render errors. Future: forward to Sentry/etc.
+    // Single sink for unhandled render errors. Always log to console
+    // for local dev; forward to Sentry too — the Sentry call is itself
+    // a no-op when no DSN is configured (see lib/sentry.ts).
     console.error('[ErrorBoundary] caught render error', error, info);
+    Sentry.captureException(error, {
+      contexts: { react: { componentStack: info.componentStack ?? '' } },
+    });
   }
 
   private handleReload = () => {
